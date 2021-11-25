@@ -5,6 +5,32 @@ $tile-size: 25px;
     display: inline-block;
 }
 
+.hidden-grid-hidden-container {
+    display: flex;
+}
+
+.middle-container, .hidden-tile-column {
+    display: inline-block;
+}
+
+.hidden-tile-column {
+    width: 27px;
+
+    margin-top: 1px;
+
+    .hidden-tile {
+        margin-bottom: -6px;
+    }
+}
+
+.column-left {
+    margin-right: 6px;
+}
+
+.column-right {
+    margin-left: 6px;
+}
+
 .tile-row {
     height: $tile-size;
     width: 100%;
@@ -18,27 +44,64 @@ $tile-size: 25px;
     border: 1px solid #eee;
 }
 
+.hidden-row-top {
+    margin-top: -30px;
+    position: relative;
+    z-index: -1;
+}
+
+.hidden-row-bottom {
+    margin-bottom: -30px;
+    position: relative;
+    z-index: -1;
+}
+
+.hidden-tile {
+    // margin-top: -25px;
+    border: 1px solid rgba(0, 0, 0, 0)
+}
+
 .tile-object {
     position: absolute;
     display: inline-block;
     width: $tile-size;
     height: $tile-size;
+    border-radius: 50%;
+
 }
 
 .player {
     background-color: blue;
-    border-radius: 50%;
     z-index: 100;
 }
 
 .enemy {
     background-color: red;
-    border-radius: 50%;
     z-index: 101;
 }
 
 .coin {
     background-color: yellow;
-    border-radius: 50%;
+    border: 1px #333 solid;
+    width: 23px;
+    height: 23px;
     z-index: 99;
+}
+
+.enemy-bouncer {
+    background-color: darkred;
+    z-index: 102;
+}
+
+.enemy-teleporter {
+    background-color: rgb(0, 0, 70);
+    z-index: 102;
+}
+
+.enemy-mini-sniper {
+    background-color: red;
+    border-radius: 0%;
+    border: black 2px solid;
+    width: 21px;
+    height: 21px;
 }

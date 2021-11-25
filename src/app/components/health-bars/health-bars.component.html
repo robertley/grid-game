@@ -1,0 +1,6 @@
+<div class="health-bars-container">
+    <div class="health-bar" *ngFor="let boss of bosses">
+        <span class="bar" [ngStyle]="{ 'width.px' : getBarWidth(boss)}"></span>
+        <span class="boss-title">{{boss.subClass}}</span>
+    </div>
+</div>

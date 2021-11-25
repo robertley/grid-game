@@ -23,4 +23,5 @@ export class GridComponent implements OnInit {
     this.grid = this.gameService.game.grid;
   }
 
+
 }

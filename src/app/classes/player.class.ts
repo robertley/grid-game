@@ -27,6 +27,7 @@ export class Player extends TileObject {
 
             if (obj.tag == "coin") {
                 this.gameService.addToScore(100);
+                this.objectService.damageRandomEnemy();
                 obj.destroy();
             }
         }

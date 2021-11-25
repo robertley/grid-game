@@ -1,6 +1,9 @@
 import { Injectable, Injector } from "@angular/core";
 import { Coin } from "../classes/coin.class";
 import { BasicEnemy } from "../classes/enemies/basic.enemy";
+import { BouncerEnemy } from "../classes/enemies/bouncer.enemy";
+import { MiniSniper } from "../classes/enemies/mini-sniper.enemy";
+import { TeleporterEnemy } from "../classes/enemies/teleporter.enemy";
 import { Enemy } from "../classes/enemy.class";
 import { Player } from "../classes/player.class";
 import { TileObject } from "../classes/tile-object.class";
@@ -28,6 +31,7 @@ export class GameService {
 
     tickRate = 100;
     tickNumber = 0;
+    levelLength = 150;
     windowIntervalObject: any;
 
     constructor(private keyboardService: KeyboardService, private objectService: ObjectService) {
@@ -43,11 +47,11 @@ export class GameService {
         this.game = {
             grid: this.grid,
             player: this.player,
-            coinRate: 50,
+            coinRate: 80,
             score: 0,
             scoreMultiplier: 1,
-            enemySpawnRate: 50,
-            level: 1
+            enemySpawnRate: 50, // 50
+            level: 0
         }
 
         this.objectService.initObjectService(this.grid);
@@ -67,18 +71,44 @@ export class GameService {
             tiles.push(row);
         }
 
-        grid = {
-            tiles: tiles
+        let hiddenTiles: Tile[][] = [[], [], [], []];
+
+        for (let y = 0; y < this.gameWidth; y++) {
+            let row1 = hiddenTiles[1]
+            let row2 = hiddenTiles[3]
+            
+            row1.push(new Tile(-1, y, 1));
+            row2.push(new Tile(-1, y, 3));
         }
+        for (let x = 0; x < this.gameHeight; x++) {
+            let row1 = hiddenTiles[0]
+            let row2 = hiddenTiles[2]
+            
+            row1.push(new Tile(x, -1, 0));
+            row2.push(new Tile(x, -1, 2));
+        }
+
+        grid = {
+            tiles: tiles,
+            hiddenTiles: hiddenTiles
+        }
+
+        console.log(grid)
 
         return grid;
     }
 
     startGame() {
-        let enemy = new BasicEnemy(this, this.objectService);
-        this.randomSpawn(enemy);
         this.gameIsRunning = true;
         this.windowIntervalObject = window.setInterval(this.gameLoop.bind(this), this.tickRate)
+
+        // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(0, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(3, 1, new MiniSniper(this,this.objectService));
+
+        console.log(this.grid)
     }
 
     gameLoop() {
@@ -93,7 +123,11 @@ export class GameService {
         }
 
 
-        this.game.score += this.game.scoreMultiplier;
+        this.game.scoreMultiplier = 1 + ((this.game.level + this.objectService.enemies.size) * .1)
+
+        this.addToScore(1);
+
+        this.checkLevelUp();
 
         this.tickNumber++;
     }
@@ -150,7 +184,25 @@ export class GameService {
 
     calculateEnemySpawn() {
         if (this.tickNumber % this.game.enemySpawnRate == 0) {
-            this.randomSpawn(new BasicEnemy(this, this.objectService))
+            
+            let r = Math.floor(Math.random() * 10);
+            if (r < 5) {
+                this.randomSpawn(new BasicEnemy(this, this.objectService))
+            } else if (r < 9) {
+                this.randomSpawn(new BouncerEnemy(this, this.objectService))
+            } else {
+                this.randomSpawn(new TeleporterEnemy(this, this.objectService))
+            }
+
+        }
+    }
+
+    checkLevelUp() {
+        if (this.tickNumber % this.levelLength == 0) {
+            if (this.game.level > 0) {
+                // this.game.scoreMultiplier += .1;
+            }
+            this.game.level++;
         }
     }
 
@@ -197,7 +249,7 @@ export class GameService {
     }
 
     addToScore(amt: number) {
-        this.game.score += amt;
+        this.game.score = this.game.score + (amt * this.game.scoreMultiplier);
     }
 }
 

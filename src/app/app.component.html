@@ -11,6 +11,10 @@
             <div class="button-container" *ngIf="!gameRunning">
                 <button (click)="newGame()">Start</button>
             </div>
+
+            <div class="health-bar-container">
+                <app-health-bars></app-health-bars>
+            </div>
         </div>
     </div>
 </div>

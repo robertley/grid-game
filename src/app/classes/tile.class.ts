@@ -6,11 +6,14 @@ export class Tile {
     x: number;
     y: number;
     objects: TileObject[];
+    hiddenSection: 0 | 1 | 2 | 3 | undefined
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, hiddenSection?: 0 | 1 | 2 | 3) {
         this.x = x;
         this.y = y;
         this.objects = [];
+
+        this.hiddenSection = hiddenSection;
     }
 
     addObject(obj: TileObject) {

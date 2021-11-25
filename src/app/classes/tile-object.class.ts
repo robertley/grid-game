@@ -10,6 +10,12 @@ export class TileObject {
     location: Tile;
     tag: string;
     id: number;
+    spawnTick: number;
+
+    onHiddenSecton: boolean = false;
+    hiddenSection: 0 | 1 | 2 | 3 | undefined;
+
+    subClass: string;
 
     protected gameService: GameService;
     protected objectService: ObjectService;
@@ -17,6 +23,8 @@ export class TileObject {
     constructor(gameService: GameService, objectService: ObjectService) {
         this.gameService = gameService;
         this.objectService = objectService;
+
+        this.spawnTick = this.gameService.tickNumber;
     }
     
     moveUp() {
@@ -64,10 +72,19 @@ export class TileObject {
     }
 
     doMove(x: number, y: number) {
-        let newTile = this.gameService.grid.tiles[y][x];
+        let newTile;
+
+        if (this.onHiddenSecton && this.location.hiddenSection != undefined) {
+            let tileIndex = this.location.hiddenSection % 2 == 0 ? x : y;
+            newTile = this.gameService.grid.hiddenTiles[this.location.hiddenSection][tileIndex];
+        } else {
+            newTile = this.gameService.grid.tiles[y][x];
+        }
+
         this.location.removeObject(this);
         this.location = newTile;
         newTile.addObject(this);
+
     }
 
     onCollision() {
@@ -91,5 +108,13 @@ export class TileObject {
     destroy() {
         this.onDeath();
         this.objectService.removeObject(this);
+    }
+
+    getHtmlClass() {
+        let htmlClass = this.tag;
+        if (this.subClass) {
+            htmlClass += ("-" + this.subClass);
+        }
+        return htmlClass;
     }
 }
