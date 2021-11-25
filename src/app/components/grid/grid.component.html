@@ -1,0 +1,9 @@
+<div class="grid-container">
+    <div class="tile-row" *ngFor="let tileRow of grid.tiles">
+        <div class="tile" *ngFor="let tile of tileRow">
+            <div *ngFor="let obj of tile.objects"
+                [class]="[obj.tag, 'tile-object']"
+            ></div>
+        </div>
+    </div>
+</div>

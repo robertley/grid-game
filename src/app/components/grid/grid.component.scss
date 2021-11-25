@@ -1,0 +1,44 @@
+$tile-size: 25px;
+
+.grid-container {
+    border: 1px black solid;
+    display: inline-block;
+}
+
+.tile-row {
+    height: $tile-size;
+    width: 100%;
+}
+
+.tile {
+    display: inline-block;
+    position: relative;
+    width: $tile-size;
+    height: $tile-size;
+    border: 1px solid #eee;
+}
+
+.tile-object {
+    position: absolute;
+    display: inline-block;
+    width: $tile-size;
+    height: $tile-size;
+}
+
+.player {
+    background-color: blue;
+    border-radius: 50%;
+    z-index: 100;
+}
+
+.enemy {
+    background-color: red;
+    border-radius: 50%;
+    z-index: 101;
+}
+
+.coin {
+    background-color: yellow;
+    border-radius: 50%;
+    z-index: 99;
+}
