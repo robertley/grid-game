@@ -28,14 +28,18 @@ export class TileObject {
     }
     
     moveUp() {
+
         let newY = this.location.y - 1;
 
         // If out of bounds
         if (newY < 0) {
+            this.hitWall();
             return;
         }
 
-        this.doMove(this.location.x, newY);
+        let x = this.onHiddenSecton ? this.hiddenSection : this.location.x;
+
+        this.doMove(x, newY);
     }
 
     moveLeft() {
@@ -43,10 +47,13 @@ export class TileObject {
 
         // If out of bounds
         if (newX < 0) {
+            this.hitWall();
             return;
         }
 
-        this.doMove(newX, this.location.y);
+        let y = this.onHiddenSecton ? this.hiddenSection : this.location.y;
+
+        this.doMove(newX, y);
     }
 
     moveRight() {
@@ -54,10 +61,13 @@ export class TileObject {
 
         // If out of bounds
         if (newX > this.gameService.gameWidth - 1) {
+            this.hitWall();
             return;
         }
 
-        this.doMove(newX, this.location.y);
+        let y = this.onHiddenSecton ? this.hiddenSection : this.location.y;
+
+        this.doMove(newX, y);
     }
 
     moveDown() {
@@ -65,10 +75,13 @@ export class TileObject {
 
         // If out of bounds
         if (newY > this.gameService.gameHeight - 1) {
+            this.hitWall();
             return;
         }
 
-        this.doMove(this.location.x, newY);
+        let x = this.onHiddenSecton ? this.hiddenSection : this.location.x;
+
+        this.doMove(x, newY);
     }
 
     doMove(x: number, y: number) {
@@ -88,13 +101,16 @@ export class TileObject {
     }
 
     onCollision() {
-        console.log("collide!")
     }
 
     getCollisionObjects() {
         return this.location.objects.filter((obj) => {
             return obj.id != this.id;
         })
+    }
+
+    hitWall() {
+
     }
 
     spawn() {

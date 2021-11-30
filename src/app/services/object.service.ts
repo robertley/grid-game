@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Enemy } from "../classes/enemy.class";
+import { Projectile } from "../classes/projectile.class";
 import { TileObject } from "../classes/tile-object.class";
 import { Grid } from "../interfaces/grid.interface";
 
@@ -12,6 +13,7 @@ export class ObjectService {
     objects: Map<number, TileObject> = new Map();
     enemies: Map<number, Enemy> = new Map();
     bossEnemies: Map<number, Enemy> = new Map();
+    projectiles: Map<number, Projectile> = new Map();
     objCount = 0;
 
     initObjectService(grid: Grid) {
@@ -33,16 +35,21 @@ export class ObjectService {
             }
 
         }
+        
+        if (obj instanceof Projectile) {
+            this.projectiles.set(this.objCount, obj);
+        }
 
         this.objCount++;
 
     }
 
-    addHiddenObject(hiddenSection: number, i: number, obj: TileObject) {
+    addHiddenObject(hiddenSection: 0 | 1 | 2 | 3, i: number, obj: TileObject) {
         obj.id = this.objCount;
         let tile = this.grid.hiddenTiles[hiddenSection][i];
         tile.objects.push(obj);
         obj.location = tile;
+        obj.hiddenSection = hiddenSection;
         this.objects.set(this.objCount, obj);
 
         if (obj instanceof Enemy) {
@@ -52,8 +59,6 @@ export class ObjectService {
                 this.bossEnemies.set(this.objCount, obj);
             }
         }
-
-        // console.log("hi", this.grid)
 
         this.objCount++;
 
@@ -65,6 +70,9 @@ export class ObjectService {
 
         if (obj instanceof Enemy) {
             this.removeEnemy(obj);
+        }
+        if (obj instanceof Projectile) {
+            this.removeProjectile(obj);
         }
     }
 
@@ -84,18 +92,25 @@ export class ObjectService {
         destroyEnemy.destroy();
     }
 
-    damageRandomEnemy() {
-        let enemiesArr = Array.from(this.enemies.values());
+    damageRandomEnemy(damage?: number) {
 
-        let enemy = enemiesArr[Math.floor(Math.random() * enemiesArr.length)];
+        damage = damage ?? 1;
 
-        if (enemy) {
-            enemy.health -= 1;
+        for (let i = 0; i < damage; i++) {
 
-            if (enemy.health < 1) {
-                enemy.destroy();
+            let enemiesArr = Array.from(this.enemies.values());
+
+            let enemy = enemiesArr[Math.floor(Math.random() * enemiesArr.length)];
+    
+            if (enemy) {
+                enemy.health -= 1;
+    
+                if (enemy.health < 1) {
+                    enemy.destroy();
+                }
             }
         }
+
     }
 
     removeEnemy(enemy: Enemy) {
@@ -103,6 +118,10 @@ export class ObjectService {
         if (enemy.enemyType = "mini-boss") {
             this.bossEnemies.delete(enemy.id);
         }
+    }
+
+    removeProjectile(projectile: Projectile) {
+        this.projectiles.delete(projectile.id);
     }
 
 }

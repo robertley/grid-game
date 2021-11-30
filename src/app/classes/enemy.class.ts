@@ -26,6 +26,6 @@ export class Enemy extends TileObject {
     }
 
     attack() {
-
+        
     }
 }

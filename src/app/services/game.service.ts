@@ -1,5 +1,5 @@
 import { Injectable, Injector } from "@angular/core";
-import { Coin } from "../classes/coin.class";
+import { Coin } from "../classes/items/coin.class";
 import { BasicEnemy } from "../classes/enemies/basic.enemy";
 import { BouncerEnemy } from "../classes/enemies/bouncer.enemy";
 import { MiniSniper } from "../classes/enemies/mini-sniper.enemy";
@@ -14,6 +14,7 @@ import { Game } from "../interfaces/game.interface";
 import { Grid } from "../interfaces/grid.interface";
 import { KeyboardService } from "./keyboard.service";
 import { ObjectService } from "./object.service";
+import { SuperCoin } from "../classes/items/super-coin.class";
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +35,9 @@ export class GameService {
     levelLength = 150;
     windowIntervalObject: any;
 
+    enemyStack: Enemy[] = [];
+    coinStack: Coin[] = [];
+
     constructor(private keyboardService: KeyboardService, private objectService: ObjectService) {
 
         this.grid = this.getNewGrid();
@@ -50,7 +54,7 @@ export class GameService {
             coinRate: 80,
             score: 0,
             scoreMultiplier: 1,
-            enemySpawnRate: 50, // 50
+            enemySpawnRate: 51, // 50
             level: 0
         }
 
@@ -102,9 +106,8 @@ export class GameService {
         this.gameIsRunning = true;
         this.windowIntervalObject = window.setInterval(this.gameLoop.bind(this), this.tickRate)
 
-        // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
-        // this.objectService.addHiddenObject(0, 1, new MiniSniper(this,this.objectService));
-        // this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
+        this.objectService.addHiddenObject(0, 1, new MiniSniper(this,this.objectService));
+        this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(3, 1, new MiniSniper(this,this.objectService));
 
@@ -114,13 +117,12 @@ export class GameService {
     gameLoop() {
         this.calculateInput();
         this.calculateEnemyMovements();
+        this.calculateEnemyAttacks();
+        this.calculateProjectileMovements();
         this.calculateCollisions();
-        this.calculateEnemySpawn();
 
-        if (this.tickNumber % this.game.coinRate == 0) {
-            let coin = new Coin(this, this.objectService);
-            coin.spawn();
-        }
+        this.calculateEnemySpawn();
+        this.calculateCoinSpawn();
 
 
         this.game.scoreMultiplier = 1 + ((this.game.level + this.objectService.enemies.size) * .1)
@@ -167,8 +169,24 @@ export class GameService {
 
     calculateEnemyMovements() {
         for (let [key, enemy] of this.objectService.enemies) {
-            if (this.tickNumber % enemy.movementSpeed == 0) {
+            if ((this.tickNumber - enemy.spawnTick) % enemy.movementSpeed == 0) {
                 enemy.move();
+            }
+        }
+    }
+
+    calculateProjectileMovements() {
+        for (let [key, projectile] of this.objectService.projectiles) {
+            if ((this.tickNumber - projectile.spawnTick) % projectile.movementSpeed == 0) {
+                projectile.move();
+            }
+        }
+    }
+
+    calculateEnemyAttacks() {
+        for (let [key, enemy] of this.objectService.enemies) {
+            if ((this.tickNumber - enemy.spawnTick) % enemy.attackSpeed == 0) {
+                enemy.attack();
             }
         }
     }
@@ -184,8 +202,20 @@ export class GameService {
 
     calculateEnemySpawn() {
         if (this.tickNumber % this.game.enemySpawnRate == 0) {
+
+            if (this.enemyStack.length > 0) {
+                let enemy = this.enemyStack.shift();
+
+                if (enemy.onHiddenSecton) {
+                    this.objectService.addHiddenObject(Math.floor((Math.random() * 4)) as 0 | 1 | 2 | 3, this.gameHeight / 2, enemy);
+                    return;
+                }
+
+                this.randomSpawn(enemy);
+            }
             
             let r = Math.floor(Math.random() * 10);
+            // r = 0;
             if (r < 5) {
                 this.randomSpawn(new BasicEnemy(this, this.objectService))
             } else if (r < 9) {
@@ -197,13 +227,35 @@ export class GameService {
         }
     }
 
+    calculateCoinSpawn() {
+        if (this.tickNumber % this.game.coinRate == 0) {
+            let coin;
+            if (this.coinStack.length > 0) {
+                coin = this.coinStack.shift();
+            } else {
+                coin = new Coin(this, this.objectService);
+            }
+
+            coin.spawn();
+        }
+    }
+
     checkLevelUp() {
         if (this.tickNumber % this.levelLength == 0) {
             if (this.game.level > 0) {
                 // this.game.scoreMultiplier += .1;
             }
             this.game.level++;
+
+            if (this.game.level == 5) {
+                this.enemyStack.push(new MiniSniper(this,this.objectService))
+            }
+
+            if (this.game.level == 7) {
+                this.coinStack.push(new SuperCoin(this,this.objectService))
+            }
         }
+
     }
 
     randomSpawn(obj: TileObject){

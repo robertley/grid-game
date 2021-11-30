@@ -1,14 +1,8 @@
-import { GameService } from "../services/game.service";
-import { ObjectService } from "../services/object.service";
-import { TileObject } from "./tile-object.class";
+import { TileObject } from "../tile-object.class";
 
 export class Coin extends TileObject {
 
     tag = "coin";
-
-    constructor(gameService: GameService, objectService: ObjectService) {
-        super(gameService, objectService);
-    }
 
     spawn() {
         let coordinate = this.gameService.getRandomCoordinate();

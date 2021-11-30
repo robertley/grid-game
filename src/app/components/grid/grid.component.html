@@ -4,7 +4,7 @@
     <div class="hidden-tile-column column-left">
         <div *ngFor="let hiddenTile of grid.hiddenTiles[3]" class="tile hidden-tile">
             <div *ngFor="let obj of hiddenTile.objects"
-                [class]="[obj.getHtmlClass(), 'tile-object']"
+                [ngClass]="[obj.getHtmlClass(), 'tile-object']"
             ></div>
         </div>
     </div>
@@ -13,7 +13,7 @@
         <div class="hidden-row-top">
             <div *ngFor="let hiddenTile of grid.hiddenTiles[0]" class="tile hidden-tile">
                 <div *ngFor="let obj of hiddenTile.objects"
-                    [class]="[obj.getHtmlClass(), 'tile-object']"
+                    [ngClass]="[obj.getHtmlClass(), 'tile-object']"
                 ></div>
             </div>
         </div>
@@ -22,7 +22,7 @@
             <div class="tile-row" *ngFor="let tileRow of grid.tiles">
                 <div class="tile" *ngFor="let tile of tileRow">
                     <div *ngFor="let obj of tile.objects"
-                        [class]="[obj.getHtmlClass(), 'tile-object']"
+                        [ngClass]="[obj.getHtmlClass(), 'tile-object']"
                     ></div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
         <div class="hidden-row-bottom">
             <div *ngFor="let hiddenTile of grid.hiddenTiles[2]" class="tile hidden-tile">
                 <div *ngFor="let obj of hiddenTile.objects"
-                    [class]="[obj.getHtmlClass(), 'tile-object']"
+                    [ngClass]="[obj.getHtmlClass(), 'tile-object']"
                 ></div>
             </div>
         </div>
@@ -40,7 +40,7 @@
     <div class="hidden-tile-column column-right">
         <div *ngFor="let hiddenTile of grid.hiddenTiles[1]" class="tile hidden-tile">
             <div *ngFor="let obj of hiddenTile.objects"
-                [class]="[obj.getHtmlClass(), 'tile-object']"
+                [ngClass]="[obj.getHtmlClass(), 'tile-object']"
             ></div>
         </div>
     </div>

@@ -88,6 +88,14 @@ $tile-size: 25px;
     z-index: 99;
 }
 
+.super-coin {
+    background-color: orange;
+    border: 1px #333 solid;
+    width: 23px;
+    height: 23px;
+    z-index: 99;
+}
+
 .enemy-bouncer {
     background-color: darkred;
     z-index: 102;
@@ -104,4 +112,17 @@ $tile-size: 25px;
     border: black 2px solid;
     width: 21px;
     height: 21px;
+}
+
+.projectile-bullet {
+    background-color: black;
+    z-index: 103;
+}
+
+.direction-Down, .direction-Up {
+    transform: scale(.8, 1);
+}
+
+.direction-Left, .direction-Right {
+    transform: scale(1, .8);
 }
