@@ -4,8 +4,6 @@ import { Enemy } from "../enemy.class";
 
 export class BouncerEnemy extends Enemy {
 
-    movementSpeed = 1;
-
     type: "vertical" | "horizontal";
     forwards = true;
 

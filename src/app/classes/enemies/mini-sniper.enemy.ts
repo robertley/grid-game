@@ -1,6 +1,7 @@
 import { GameService } from "src/app/services/game.service";
 import { ObjectService } from "src/app/services/object.service";
 import { Enemy } from "../enemy.class";
+import { Heart } from "../items/heart.class";
 import { Bullet } from "../projectiles/bullet.class";
 
 export class MiniSniper extends Enemy {
@@ -76,6 +77,11 @@ export class MiniSniper extends Enemy {
 
         let movementDirection: "Up" | "Right" | "Down" | "Left" = this.hiddenSection == 0 ? "Down" : this.hiddenSection == 1 ? "Left" : this.hiddenSection == 2 ? "Up" : "Right";
         this.objectService.addObject(x, y, new Bullet(this.gameService, this.objectService, movementDirection))
+    }
+
+    onDeath() {
+        let randomC = this.gameService.getRandomCoordinate();
+        this.objectService.addObject(randomC.x, randomC.y, new Heart(this.gameService, this.objectService));
     }
 
    

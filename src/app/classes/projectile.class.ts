@@ -4,7 +4,7 @@ import { TileObject } from "./tile-object.class";
 
 export class Projectile extends TileObject {
 
-    movementSpeed = 1;
+    movementSpeed = 2;
     movementDirection: "Up" | "Right" | "Down" | "Left";
 
     damage = 1;

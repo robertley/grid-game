@@ -1,0 +1,64 @@
+
+$z-basic-enemy: 101;
+$z-projectile: 103;
+$z-elite-enemy: 102;
+
+.enemy {
+    background-color: red;
+    z-index: $z-basic-enemy;
+}
+
+.enemy-bouncer {
+    background-color: darkred;
+    z-index: $z-basic-enemy;
+}
+
+.enemy-teleporter {
+    background-color: rgb(0, 0, 70);
+    z-index: $z-basic-enemy;
+}
+
+.enemy-mini-sniper {
+    background-color: red;
+    border-radius: 0%;
+    border: black 2px solid;
+    width: 21px;
+    height: 21px;
+}
+
+.projectile-bullet {
+    background-color: transparent;
+    border-radius: 0%;
+    width: 0;
+    height: 0;
+    border: transparent 12.5px solid;
+    z-index: $z-projectile;
+}
+
+.direction-Down {
+    border-top: black 25px solid;
+    // border-bottom: 0;
+}
+.direction-Right {
+    border-left: black 25px solid;
+    border-right: 0;
+}
+.direction-Up {
+    border-bottom: black 25px solid;
+    border-top: 0;
+}
+.direction-Left {
+    border-right: black 25px solid;
+    border-left: 0;
+}
+
+.elite {
+    box-shadow: 0 0 0 2px white,
+                0 0 0 5px black;
+    left: 3px;
+    top: 3px;
+    background-color: #e30000;
+    width: 20px;
+    height: 20px;
+    z-index: $z-elite-enemy;
+}

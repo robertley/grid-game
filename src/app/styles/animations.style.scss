@@ -1,0 +1,36 @@
+
+$glow-color: rgb(255, 0, 212, .8);
+
+@keyframes pulseAfter {
+    from {
+        transform: rotate(45deg) scale(1) translate(0, 0); 
+    }
+  
+    to {
+        transform: rotate(45deg) scale(1.2)  translate(2.5px, 2.5px);
+    }
+}
+
+@keyframes pulseBefore {
+    from {
+        transform: rotate(-45deg) scale(1) translate(0, 0); 
+    }
+  
+    to {
+        transform: rotate(-45deg) scale(1.2)  translate(-2.5px, 2.5px);
+    }
+}
+
+@keyframes glow {
+    from {
+        -webkit-box-shadow: 0px -1px 18px 1px $glow-color;
+        -moz-box-shadow: 0px -1px 18px 1px $glow-color;
+        box-shadow: 0px -1px 18px 1px $glow-color;
+    }
+  
+    to {
+        -webkit-box-shadow: 0px -1px 18px 3px $glow-color;
+        -moz-box-shadow: 0px -1px 18px 3px $glow-color;
+        box-shadow: 0px -1px 18px 3px $glow-color;
+    }
+}

@@ -1,6 +1,6 @@
 import { Injectable, Injector } from "@angular/core";
 import { Coin } from "../classes/items/coin.class";
-import { BasicEnemy } from "../classes/enemies/basic.enemy";
+import { Follower } from "../classes/enemies/follower.enemy";
 import { BouncerEnemy } from "../classes/enemies/bouncer.enemy";
 import { MiniSniper } from "../classes/enemies/mini-sniper.enemy";
 import { TeleporterEnemy } from "../classes/enemies/teleporter.enemy";
@@ -15,11 +15,15 @@ import { Grid } from "../interfaces/grid.interface";
 import { KeyboardService } from "./keyboard.service";
 import { ObjectService } from "./object.service";
 import { SuperCoin } from "../classes/items/super-coin.class";
+import { Sprinter } from "../classes/enemies/sprinter.enemy";
+import { AngryCoin } from "../classes/items/angry-coin.class";
 
 @Injectable({
     providedIn: 'root'
 })
 export class GameService {
+
+    tickModifier = 2;
     
     game: Game;
     grid: Grid;
@@ -30,13 +34,16 @@ export class GameService {
 
     gameIsRunning = false;
 
-    tickRate = 100;
+    tickRate = 100 / this.tickModifier;
     tickNumber = 0;
-    levelLength = 150;
+    levelLength = 150 * this.tickModifier;
     windowIntervalObject: any;
 
+    inputStack: KEY_CODE[] = [];
     enemyStack: Enemy[] = [];
     coinStack: Coin[] = [];
+
+    private spawnModifier = 1;
 
     constructor(private keyboardService: KeyboardService, private objectService: ObjectService) {
 
@@ -51,10 +58,10 @@ export class GameService {
         this.game = {
             grid: this.grid,
             player: this.player,
-            coinRate: 80,
+            coinRate: 80 * this.tickModifier,
             score: 0,
             scoreMultiplier: 1,
-            enemySpawnRate: 51, // 50
+            enemySpawnRate: 50 * this.tickModifier + 1, // 50
             level: 0
         }
 
@@ -106,10 +113,16 @@ export class GameService {
         this.gameIsRunning = true;
         this.windowIntervalObject = window.setInterval(this.gameLoop.bind(this), this.tickRate)
 
-        this.objectService.addHiddenObject(0, 1, new MiniSniper(this,this.objectService));
-        this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(0, 1, new MiniSniper(this,this.objectService));
+        // this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(3, 1, new MiniSniper(this,this.objectService));
+
+        // this.objectService.addObject(15, 10, new SuperCoin(this, this.objectService));
+        // this.objectService.addObject(5, 10, new Heart(this, this.objectService));
+
+        this.enemyStack.push(new Sprinter(this,this.objectService))
+        // this.spawnEnemy();
 
         console.log(this.grid)
     }
@@ -117,13 +130,12 @@ export class GameService {
     gameLoop() {
         this.calculateInput();
         this.calculateEnemyMovements();
-        this.calculateEnemyAttacks();
         this.calculateProjectileMovements();
+        this.calculateEnemyAttacks();
         this.calculateCollisions();
 
         this.calculateEnemySpawn();
         this.calculateCoinSpawn();
-
 
         this.game.scoreMultiplier = 1 + ((this.game.level + this.objectService.enemies.size) * .1)
 
@@ -131,40 +143,81 @@ export class GameService {
 
         this.checkLevelUp();
 
+        this.doExtraInput();
+
         this.tickNumber++;
     }
 
     calculateInput() {
         // console.log(this.keyboardService.registeredKeys)
         // console.log("calculating input")
-        for (let [key, value] of this.keyboardService.registeredKeys) {
-            switch (key) {
-                case KEY_CODE.UP_ARROW:
-                    this.player.moveUp();
-                    break;
+        if (this.tickNumber % this.player.movementSpeed == 0) {
+            for (let [key, value] of this.keyboardService.registeredKeys) {
+                switch (key) {
+                    case KEY_CODE.UP_ARROW:
+                        this.player.moveUp();
+                        break;
+                    case KEY_CODE.W:
+                        if (this.keyboardService.registeredKeys.has(KEY_CODE.UP_ARROW)) {
+                            this.inputStack.push(key);
+                            break;
+                        }
+                        this.player.moveUp();
+                        break;
+                    case KEY_CODE.DOWN_ARROW:
+                        this.player.moveDown();
+                        break;
+                    case KEY_CODE.S:
+                        if (this.keyboardService.registeredKeys.has(KEY_CODE.DOWN_ARROW)) {
+                            this.inputStack.push(key);
+                            break;
+                        }
+                        this.player.moveDown();
+                        break;
+                    case KEY_CODE.LEFT_ARROW:
+                        this.player.moveLeft();
+                        break;
+                    case KEY_CODE.A:
+                        if (this.keyboardService.registeredKeys.has(KEY_CODE.LEFT_ARROW)) {
+                            this.inputStack.push(key);
+                            break;
+                        }
+                        this.player.moveLeft();
+                        break;
+                    case KEY_CODE.RIGHT_ARROW:
+                        this.player.moveRight();
+                        break;
+                    case KEY_CODE.D:
+                        if (this.keyboardService.registeredKeys.has(KEY_CODE.RIGHT_ARROW)) {
+                            this.inputStack.push(key);
+                            break;
+                        }
+                        this.player.moveRight();
+                        break;
+                }
+            }
+        }
+    }
+
+    doExtraInput() {
+        for (let input of this.inputStack) {
+            switch (input) {
                 case KEY_CODE.W:
                     this.player.moveUp();
-                    break;
-                case KEY_CODE.DOWN_ARROW:
-                    this.player.moveDown();
                     break;
                 case KEY_CODE.S:
                     this.player.moveDown();
                     break;
-                case KEY_CODE.LEFT_ARROW:
-                    this.player.moveLeft();
-                    break;
                 case KEY_CODE.A:
                     this.player.moveLeft();
-                    break;
-                case KEY_CODE.RIGHT_ARROW:
-                    this.player.moveRight();
                     break;
                 case KEY_CODE.D:
                     this.player.moveRight();
                     break;
             }
         }
+        // clear
+        this.inputStack = [];
     }
 
     calculateEnemyMovements() {
@@ -201,58 +254,79 @@ export class GameService {
     }
 
     calculateEnemySpawn() {
-        if (this.tickNumber % this.game.enemySpawnRate == 0) {
+        if (this.tickNumber % this.enemySpawnRate == 0) {
 
-            if (this.enemyStack.length > 0) {
-                let enemy = this.enemyStack.shift();
-
-                if (enemy.onHiddenSecton) {
-                    this.objectService.addHiddenObject(Math.floor((Math.random() * 4)) as 0 | 1 | 2 | 3, this.gameHeight / 2, enemy);
-                    return;
-                }
-
-                this.randomSpawn(enemy);
-            }
-            
-            let r = Math.floor(Math.random() * 10);
-            // r = 0;
-            if (r < 5) {
-                this.randomSpawn(new BasicEnemy(this, this.objectService))
-            } else if (r < 9) {
-                this.randomSpawn(new BouncerEnemy(this, this.objectService))
-            } else {
-                this.randomSpawn(new TeleporterEnemy(this, this.objectService))
-            }
-
+            this.spawnEnemy();
         }
     }
 
-    calculateCoinSpawn() {
-        if (this.tickNumber % this.game.coinRate == 0) {
-            let coin;
-            if (this.coinStack.length > 0) {
-                coin = this.coinStack.shift();
-            } else {
-                coin = new Coin(this, this.objectService);
+    spawnEnemy() {
+        if (this.enemyStack.length > 0) {
+            let enemy = this.enemyStack.shift();
+
+            if (enemy.onHiddenSecton) {
+                this.objectService.addHiddenObject(Math.floor((Math.random() * 4)) as 0 | 1 | 2 | 3, this.gameHeight / 2, enemy);
+                return;
             }
 
-            coin.spawn();
+            this.randomSpawn(enemy);
         }
+        
+        let Enemy = this.objectService.createLottery(this.objectService.availableEnemies);
+        let enemy = new Enemy(this, this.objectService);
+        this.randomSpawn(enemy);
+    }
+
+    calculateCoinSpawn() {
+        if (this.tickNumber % this.coinRate == 0) {
+            this.spawnCoin();
+        }
+    }
+
+    spawnCoin() {
+        let coin;
+        if (this.coinStack.length > 0) {
+            coin = this.coinStack.shift();
+        } else {
+            let CoinType = this.objectService.createLottery(this.objectService.availableItems);
+            coin = new CoinType(this, this.objectService);
+        }
+
+        coin.spawn();
     }
 
     checkLevelUp() {
         if (this.tickNumber % this.levelLength == 0) {
-            if (this.game.level > 0) {
-                // this.game.scoreMultiplier += .1;
-            }
+
             this.game.level++;
 
+            if (this.game.level == 2) {
+                // this.enemyStack.push(new Sprinter(this,this.objectService))
+                // this.spawnEnemy();
+            }
+
             if (this.game.level == 5) {
-                this.enemyStack.push(new MiniSniper(this,this.objectService))
+                this.enemyStack.push(new MiniSniper(this,this.objectService));
+                this.objectService.availableItems.set(AngryCoin, 2);
             }
 
             if (this.game.level == 7) {
                 this.coinStack.push(new SuperCoin(this,this.objectService))
+            }
+
+            if (this.game.level == 8) {
+                this.spawnModifier = .75;
+                this.game.coinRate = 70;
+                this.spawnCoin();
+                this.spawnEnemy();
+                this.spawnEnemy();
+            }
+
+            if (this.game.level == 9) {
+                this.enemyStack.unshift(new Sprinter(this,this.objectService));
+                this.spawnEnemy();
+
+                this.objectService.availableEnemies.set(Sprinter, 1);
             }
         }
 
@@ -302,6 +376,14 @@ export class GameService {
 
     addToScore(amt: number) {
         this.game.score = this.game.score + (amt * this.game.scoreMultiplier);
+    }
+
+    get enemySpawnRate() {
+        return Math.floor(this.game.enemySpawnRate * this.spawnModifier)
+    }
+
+    get coinRate() {
+        return Math.floor(this.game.coinRate * this.spawnModifier)
     }
 }
 

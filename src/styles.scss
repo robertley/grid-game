@@ -1,3 +1,18 @@
 html, body {
     margin: 0;
 }
+
+$tile-size: 25px;
+
+.tile-object {
+    position: absolute;
+    display: inline-block;
+    width: $tile-size;
+    height: $tile-size;
+    border-radius: 50%;
+    background-color: lime;
+}
+
+// @import './app/styles/animations.style.scss';
+@import './app/styles/enemy.style.scss';
+@import './app/styles/items.style.scss';

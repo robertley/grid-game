@@ -61,68 +61,8 @@ $tile-size: 25px;
     border: 1px solid rgba(0, 0, 0, 0)
 }
 
-.tile-object {
-    position: absolute;
-    display: inline-block;
-    width: $tile-size;
-    height: $tile-size;
-    border-radius: 50%;
-
-}
-
 .player {
     background-color: blue;
     z-index: 100;
 }
 
-.enemy {
-    background-color: red;
-    z-index: 101;
-}
-
-.coin {
-    background-color: yellow;
-    border: 1px #333 solid;
-    width: 23px;
-    height: 23px;
-    z-index: 99;
-}
-
-.super-coin {
-    background-color: orange;
-    border: 1px #333 solid;
-    width: 23px;
-    height: 23px;
-    z-index: 99;
-}
-
-.enemy-bouncer {
-    background-color: darkred;
-    z-index: 102;
-}
-
-.enemy-teleporter {
-    background-color: rgb(0, 0, 70);
-    z-index: 102;
-}
-
-.enemy-mini-sniper {
-    background-color: red;
-    border-radius: 0%;
-    border: black 2px solid;
-    width: 21px;
-    height: 21px;
-}
-
-.projectile-bullet {
-    background-color: black;
-    z-index: 103;
-}
-
-.direction-Down, .direction-Up {
-    transform: scale(.8, 1);
-}
-
-.direction-Left, .direction-Right {
-    transform: scale(1, .8);
-}

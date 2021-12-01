@@ -5,11 +5,14 @@ import { Enemy } from "./enemy.class";
 import { Projectile } from "./projectile.class";
 import { TileObject } from "./tile-object.class";
 import { SuperCoin } from "./items/super-coin.class";
+import { Heart } from "./items/heart.class";
+import { AngryCoin } from "./items/angry-coin.class";
 
 export class Player extends TileObject {
 
     tag = "player";
     health: number = 6;
+    movementSpeed = 2;
 
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);
@@ -24,6 +27,13 @@ export class Player extends TileObject {
                 this.health--;
                 this.checkDeath();
                 obj.destroy();
+            }
+
+            if (obj instanceof AngryCoin) {
+                this.gameService.addToScore(200);
+                this.objectService.damageStrongestEnemy();
+                obj.destroy();
+                continue;
             }
 
             if (obj instanceof Coin) {
@@ -41,6 +51,11 @@ export class Player extends TileObject {
             if (obj instanceof Projectile) {
                 this.health -= obj.damage;
                 this.checkDeath();
+                obj.destroy();
+            }
+
+            if (obj instanceof Heart) {
+                this.health += 2;
                 obj.destroy();
             }
 
