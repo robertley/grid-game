@@ -1,5 +1,4 @@
 .catalog {
-    margin-right: 4em;
     height: 480px;
     width: 250px;
     overflow-y: scroll;
@@ -31,4 +30,37 @@
 
 .heart {
     position: relative;
+}
+
+.catalog-wrapper {
+    margin-right: 4em;
+    position: relative;
+}
+
+.hover-item-container {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    padding: 1em;
+    // min-height: 100px;
+    border: 1px solid black;
+    top: 0;
+    left: 100%;
+    background-color: white;
+    z-index: 999;
+}
+
+.hover-item-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+
+    .tile-object {
+        margin-right: 1em;
+    }
+}
+
+.item-description {
+    color: gray;
+    font-style: italic;
 }

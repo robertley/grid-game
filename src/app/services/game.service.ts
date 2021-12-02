@@ -403,7 +403,7 @@ export class GameService {
     localStorage: LocalStorage;
 
     initLocalStorage() {
-        window.localStorage.clear();
+        // window.localStorage.clear();
         // return;
         if (window.localStorage.getItem('gridStorage') == undefined) {
             console.log('setting new local storage');
