@@ -10,6 +10,7 @@ export class Enemy extends TileObject {
     maxHealth = 1;
     health = this.maxHealth;
     attackSpeed: number | null = null;
+    collisionDamage = 1;
 
     enemyType: EnemyType = "basic";
 

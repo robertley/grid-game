@@ -6,5 +6,6 @@ export class Sprinter extends Follower {
     tag = "sprinter"
     enemyType = "elite" as EnemyType;
     movementSpeed = 2;
+    collisionDamage = 2;
     
 }

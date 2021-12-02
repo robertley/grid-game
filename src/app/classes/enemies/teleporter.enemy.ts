@@ -9,7 +9,7 @@ export class TeleporterEnemy extends Enemy {
     type: "vertical" | "horizontal";
     forwards = true;
 
-    subClass = "teleporter"
+    tag = "teleporter"
 
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);

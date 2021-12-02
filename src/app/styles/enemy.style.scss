@@ -3,22 +3,22 @@ $z-basic-enemy: 101;
 $z-projectile: 103;
 $z-elite-enemy: 102;
 
-.enemy {
+.follower {
     background-color: red;
     z-index: $z-basic-enemy;
 }
 
-.enemy-bouncer {
+.bouncer {
     background-color: darkred;
     z-index: $z-basic-enemy;
 }
 
-.enemy-teleporter {
+.teleporter {
     background-color: rgb(0, 0, 70);
     z-index: $z-basic-enemy;
 }
 
-.enemy-mini-sniper {
+.mini-sniper {
     background-color: red;
     border-radius: 0%;
     border: black 2px solid;
@@ -26,7 +26,7 @@ $z-elite-enemy: 102;
     height: 21px;
 }
 
-.projectile-bullet {
+.bullet-bullet, .bullet {
     background-color: transparent;
     border-radius: 0%;
     width: 0;

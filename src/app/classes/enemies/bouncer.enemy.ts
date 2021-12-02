@@ -7,7 +7,7 @@ export class BouncerEnemy extends Enemy {
     type: "vertical" | "horizontal";
     forwards = true;
 
-    subClass = "bouncer"
+    tag = "bouncer"
 
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);

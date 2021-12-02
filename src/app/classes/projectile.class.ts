@@ -9,13 +9,12 @@ export class Projectile extends TileObject {
 
     damage = 1;
 
-    tag = "projectile";
-    subClass = "bullet"
+    tag = "bullet";
 
-    constructor(gameservice: GameService, objectService: ObjectService, movementDirection: "Up" | "Right" | "Down" | "Left") {
+    constructor(gameservice: GameService, objectService: ObjectService, movementDirection?: "Up" | "Right" | "Down" | "Left") {
         super(gameservice, objectService);
 
-        this.movementDirection = movementDirection;
+        this.movementDirection = movementDirection ?? "Right";
     }
 
     move() {

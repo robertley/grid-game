@@ -10,6 +10,12 @@
     height: 50px;
 }
 
+.main-wrapper {
+    display: flex;
+    // align-items: center;
+    justify-content: center;
+}
+
 .button-container {
     display: flex;
     justify-content: center;

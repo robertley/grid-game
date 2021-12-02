@@ -5,6 +5,8 @@ import { Enemy } from "../enemy.class";
 
 export class Follower extends Enemy {
 
+    tag = "follower"
+
     movementSpeed = 4;
 
     constructor(gameService: GameService, objectService: ObjectService) {

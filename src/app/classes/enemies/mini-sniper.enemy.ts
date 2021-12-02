@@ -13,7 +13,7 @@ export class MiniSniper extends Enemy {
     health = 2;
     attackSpeed = 8;
 
-    subClass = "mini-sniper";
+    tag = "mini-sniper";
 
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);

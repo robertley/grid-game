@@ -1,0 +1,14 @@
+<div class="catalog">
+    <div *ngFor="let group of localStorage.items">
+        <h2>{{group.groupName}}</h2>
+        <div *ngFor="let item of group.storageItems">
+            <span *ngIf="item.discovered"  class="item-container">
+                <span>{{item.name}}</span>            
+                <div [ngClass]="[item.htmlClass, 'tile-object']"></div>
+            </span>
+            <span *ngIf="!item.discovered" class="not-discovered-span">
+                <span>? ? ? ? ? ? ? ? ?</span>
+            </span>
+        </div>
+    </div>
+</div>

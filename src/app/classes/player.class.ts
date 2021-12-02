@@ -23,8 +23,10 @@ export class Player extends TileObject {
         let collisionObjects = this.getCollisionObjects();
         // console.log(collisionObjects)
         for (let obj of collisionObjects) {
+            this.gameService.setObjectDiscovered(obj);
+
             if (obj instanceof Enemy) {
-                this.health--;
+                this.health -= obj.collisionDamage;
                 this.checkDeath();
                 obj.destroy();
             }
@@ -64,7 +66,7 @@ export class Player extends TileObject {
 
 
     checkDeath() {
-        if (this.health == 0) {
+        if (this.health < 1) {
             this.death();
             return;
         }

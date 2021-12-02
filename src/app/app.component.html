@@ -1,20 +1,32 @@
 <div class="app-container">
-    <div class="game-container">
-        <div class="hud-container">
-            <app-hud></app-hud>
-        </div>
-        <div class="grid-container">
-            <app-grid></app-grid>
-        </div>
-        
-        <div class="bottom-hud">
-            <div class="button-container" *ngIf="!gameRunning">
-                <button (click)="newGame()">Start</button>
-            </div>
+    <div class="main-wrapper">
 
-            <div class="health-bar-container">
-                <app-health-bars></app-health-bars>
+        <div class="catalog-container">
+            <app-catalog></app-catalog>
+        </div>
+    
+        <div class="game-container">
+            <div class="hud-container">
+                <app-hud></app-hud>
+            </div>
+            <div class="grid-container">
+                <app-grid></app-grid>
+            </div>
+            
+            <div class="bottom-hud">
+                <div class="button-container" *ngIf="!gameRunning">
+                    <button (click)="newGame()">Start</button>
+                </div>
+    
+                <div class="health-bar-container">
+                    <app-health-bars></app-health-bars>
+                </div>
             </div>
         </div>
+
+        <div class="highscores-container">
+            <app-highscores></app-highscores>
+        </div>
+
     </div>
 </div>

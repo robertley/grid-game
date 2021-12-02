@@ -17,6 +17,9 @@ import { ObjectService } from "./object.service";
 import { SuperCoin } from "../classes/items/super-coin.class";
 import { Sprinter } from "../classes/enemies/sprinter.enemy";
 import { AngryCoin } from "../classes/items/angry-coin.class";
+import { LocalStorage } from "../interfaces/local-storage.interface";
+import { Heart } from "../classes/items/heart.class";
+import { Bullet } from "../classes/projectiles/bullet.class";
 
 @Injectable({
     providedIn: 'root'
@@ -48,6 +51,8 @@ export class GameService {
     constructor(private keyboardService: KeyboardService, private objectService: ObjectService) {
 
         this.grid = this.getNewGrid();
+
+        this.initLocalStorage();
 
         this.initializeGame();
     }
@@ -121,7 +126,7 @@ export class GameService {
         // this.objectService.addObject(15, 10, new SuperCoin(this, this.objectService));
         // this.objectService.addObject(5, 10, new Heart(this, this.objectService));
 
-        this.enemyStack.push(new Sprinter(this,this.objectService))
+        // this.enemyStack.push(new Sprinter(this,this.objectService))
         // this.spawnEnemy();
 
         console.log(this.grid)
@@ -263,6 +268,7 @@ export class GameService {
     spawnEnemy() {
         if (this.enemyStack.length > 0) {
             let enemy = this.enemyStack.shift();
+            this.setObjectDiscovered(enemy);
 
             if (enemy.onHiddenSecton) {
                 this.objectService.addHiddenObject(Math.floor((Math.random() * 4)) as 0 | 1 | 2 | 3, this.gameHeight / 2, enemy);
@@ -274,6 +280,7 @@ export class GameService {
         
         let Enemy = this.objectService.createLottery(this.objectService.availableEnemies);
         let enemy = new Enemy(this, this.objectService);
+        this.setObjectDiscovered(enemy);
         this.randomSpawn(enemy);
     }
 
@@ -316,7 +323,7 @@ export class GameService {
 
             if (this.game.level == 8) {
                 this.spawnModifier = .75;
-                this.game.coinRate = 70;
+                // this.game.coinRate = 80;
                 this.spawnCoin();
                 this.spawnEnemy();
                 this.spawnEnemy();
@@ -385,5 +392,142 @@ export class GameService {
     get coinRate() {
         return Math.floor(this.game.coinRate * this.spawnModifier)
     }
+
+
+
+
+
+    
+    // #region local storage
+
+    localStorage: LocalStorage;
+
+    initLocalStorage() {
+        window.localStorage.clear();
+        // return;
+        if (window.localStorage.getItem('gridStorage') == undefined) {
+            console.log('setting new local storage');
+            let discoverDefault = false;
+            let localStorage: LocalStorage = {
+                items: [
+                    {
+                        groupName: "Items",
+                        storageItems: [
+                            {
+                                name: "Coin",
+                                discovered: discoverDefault,
+                                description: "After collecting does 1 damage to a random enemy.",
+                                ...this.getItemStorageData(Coin)
+                            },
+                            {
+                                name: "Angry Coin",
+                                discovered: discoverDefault,
+                                description: "After collecting does 1 damage to one of the strongest enemies.",
+                                ...this.getItemStorageData(AngryCoin)
+                            },
+                            {
+                                name: "Super Coin",
+                                discovered: discoverDefault,
+                                description: "After collecting does 1 damage to a random enemy five times.",
+                                ...this.getItemStorageData(SuperCoin)
+                            },
+                            {
+                                name: "Heart",
+                                discovered: discoverDefault,
+                                description: "Grants 2 health.",
+                                ...this.getItemStorageData(Heart)
+                            }
+                        ]
+                    },
+                    {
+                        groupName: "Enemies",
+                        storageItems: [
+                            {
+                                name: "Follower",
+                                discovered: discoverDefault,
+                                description: "He follows ya",
+                                ...this.getItemStorageData(Follower)
+                            },
+                            {
+                                name: "Bouncer",
+                                discovered: discoverDefault,
+                                description: "Bouncey boi",
+                                ...this.getItemStorageData(BouncerEnemy)
+                            },
+                            {
+                                name: "Teleporter",
+                                discovered: discoverDefault,
+                                description: "Checkmate flat-earthers.",
+                                ...this.getItemStorageData(TeleporterEnemy)
+                            },
+                            {
+                                name: "Mini Sniper",
+                                discovered: discoverDefault,
+                                description: "Mini Sniper goes brrrrrrrrrrrr",
+                                ...this.getItemStorageData(MiniSniper)
+                            },
+                            {
+                                name: "Bullet",
+                                discovered: discoverDefault,
+                                description: "pew",
+                                ...this.getItemStorageData(Bullet)
+                            },
+                            {
+                                name: "Sprinter",
+                                discovered: discoverDefault,
+                                description: "He is determined to catch you.",
+                                ...this.getItemStorageData(Sprinter)
+                            }
+                        ]
+                    }
+                ]
+            }
+      
+            this.localStorage = localStorage;
+            this.setLocalStorageToMemory();
+        }
+      
+        this.localStorage = JSON.parse(window.localStorage.getItem('gridStorage'));
+
+        console.log("Local Storage:",this.localStorage)
+    }
+
+    
+    getItemStorageData(ItemClass: typeof TileObject): any {
+        let item = new ItemClass(this, this.objectService);
+        return {
+            htmlClass: item.getHtmlClass(),
+            tag: item.tag
+        }
+    }
+
+    setLocalStorageToMemory() {
+        window.localStorage.setItem('gridStorage', JSON.stringify(this.localStorage))
+    }
+
+    setObjectDiscovered(obj: TileObject) {
+        let found = false;
+        for (let group of this.localStorage.items) {
+            for (let item of group.storageItems) {
+                if (obj.tag == item.tag) {
+                    if (item.discovered) {
+                        return;
+                    }
+                    item.discovered = true;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                break;
+            }
+        }
+
+        this.setLocalStorageToMemory();
+    }
+
+
+    // #endregion
 }
 

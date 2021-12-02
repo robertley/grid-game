@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Enemy } from "../classes/enemy.class";
 import { Coin } from "../classes/items/coin.class";
-import { AngryCoin } from "../classes/items/angry-coin.class";
 import { Projectile } from "../classes/projectile.class";
 import { TileObject } from "../classes/tile-object.class";
 import { Grid } from "../interfaces/grid.interface";
