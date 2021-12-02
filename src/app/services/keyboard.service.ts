@@ -13,6 +13,10 @@ export class KeyboardService {
     constructor() {
     }
 
+    resetService() {
+        this.registeredKeys.clear();
+    }
+
     registerKeyEvent(event: KeyboardEvent) {
         // console.log(event.key)
         this.registeredKeys.set(event.key, true);

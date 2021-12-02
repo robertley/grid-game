@@ -34,3 +34,13 @@ $glow-color: rgb(255, 0, 212, .8);
         box-shadow: 0px -1px 18px 3px $glow-color;
     }
 }
+
+@keyframes enemySpawn {
+    from {
+        opacity: 0;
+    }
+  
+    to {
+        opacity: .8;
+    }
+}

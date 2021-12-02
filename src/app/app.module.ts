@@ -7,6 +7,9 @@ import { HudComponent } from './components/hud/hud.component';
 import { HealthBarsComponent } from './components/health-bars/health-bars.component';
 import { CatalogComponent } from './components/catalog/catalog.component';
 import { HighscoresComponent } from './components/highscores/highscores.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DeathDialogComponent } from './components/death-dialog/death-dialog.component';
 
 @NgModule({
   declarations: [
@@ -15,10 +18,13 @@ import { HighscoresComponent } from './components/highscores/highscores.componen
     HudComponent,
     HealthBarsComponent,
     CatalogComponent,
-    HighscoresComponent
+    HighscoresComponent,
+    DeathDialogComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

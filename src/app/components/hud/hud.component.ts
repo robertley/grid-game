@@ -10,12 +10,7 @@ import { GameService } from 'src/app/services/game.service';
 })
 export class HudComponent implements OnInit {
 
-  player: Player;
-  game: Game;
-
   constructor(private gameService: GameService) {
-    this.player = gameService.player;  
-    this.game = gameService.game;
   }
 
   ngOnInit(): void {
@@ -28,6 +23,14 @@ export class HudComponent implements OnInit {
       health += i % 2 == 0 ? "<" : "3";
     }
     return health;
+  }
+
+  get player() {
+    return this.gameService.player;
+  }
+
+  get game() {
+    return this.gameService.game;
   }
 
 }

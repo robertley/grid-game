@@ -15,6 +15,9 @@ export class MiniSniper extends Enemy {
 
     tag = "mini-sniper";
 
+
+    discoveredBullet = false;
+
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);
 
@@ -76,7 +79,13 @@ export class MiniSniper extends Enemy {
         }
 
         let movementDirection: "Up" | "Right" | "Down" | "Left" = this.hiddenSection == 0 ? "Down" : this.hiddenSection == 1 ? "Left" : this.hiddenSection == 2 ? "Up" : "Right";
-        this.objectService.addObject(x, y, new Bullet(this.gameService, this.objectService, movementDirection))
+        let bullet = new Bullet(this.gameService, this.objectService, movementDirection);
+        this.objectService.addObject(x, y, bullet);
+
+        if (!this.discoveredBullet) {
+            this.gameService.setObjectDiscovered(bullet);
+            this.discoveredBullet = true;
+        }
     }
 
     onDeath() {

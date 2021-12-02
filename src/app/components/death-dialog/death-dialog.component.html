@@ -1,0 +1,14 @@
+<div class="dialog-container">
+    <div class="dialog-header-container">
+        <h3>You died by this thing:</h3>
+        <div class="death-object">
+            <div [ngClass]="[deathObject.getHtmlClass(), 'tile-object']"></div>
+        </div>
+    </div>
+
+    <h1>SCORE: {{data.score.toFixed(1)}}</h1>
+
+    <div class="button-container">
+        <button (click)="closeDialog()">Try Again?</button>
+    </div>
+</div>

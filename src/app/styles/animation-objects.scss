@@ -1,0 +1,12 @@
+$animation-z: 104;
+
+@import 'animations.style.scss';
+
+.enemy-spawn {
+    background-color: red;
+    opacity: 0;
+    border-radius: 0;
+    animation: enemySpawn 1s infinite alternate;
+    z-index: $animation-z;
+    border-radius: 5px;
+}

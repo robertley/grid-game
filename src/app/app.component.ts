@@ -36,4 +36,8 @@ export class AppComponent {
   get gameRunning() {
     return this.gameService.gameIsRunning;
   }
+
+  get doDeathAnimation() {
+    return this.gameService.deathAnimation;
+  }
 }

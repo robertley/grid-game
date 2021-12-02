@@ -20,6 +20,10 @@ import { AngryCoin } from "../classes/items/angry-coin.class";
 import { LocalStorage } from "../interfaces/local-storage.interface";
 import { Heart } from "../classes/items/heart.class";
 import { Bullet } from "../classes/projectiles/bullet.class";
+import { MatDialog } from "@angular/material/dialog";
+import { DeathDialogComponent } from "../components/death-dialog/death-dialog.component";
+import { Animation } from "../classes/animation.class";
+import { EnemeySpawn } from "../classes/animations/enemy-spawn-class";
 
 @Injectable({
     providedIn: 'root'
@@ -38,7 +42,7 @@ export class GameService {
     gameIsRunning = false;
 
     tickRate = 100 / this.tickModifier;
-    tickNumber = 0;
+    tickNumber = 1;
     levelLength = 150 * this.tickModifier;
     windowIntervalObject: any;
 
@@ -46,9 +50,13 @@ export class GameService {
     enemyStack: Enemy[] = [];
     coinStack: Coin[] = [];
 
+    freezePlayer = false;
+    deathAnimation = false;
+    isGameOver = false;
+
     private spawnModifier = 1;
 
-    constructor(private keyboardService: KeyboardService, private objectService: ObjectService) {
+    constructor(private keyboardService: KeyboardService, private objectService: ObjectService, public dialog: MatDialog) {
 
         this.grid = this.getNewGrid();
 
@@ -58,7 +66,6 @@ export class GameService {
     }
 
     initializeGame() {
-        this.player = new Player(this, this.objectService);
 
         this.game = {
             grid: this.grid,
@@ -69,10 +76,36 @@ export class GameService {
             enemySpawnRate: 50 * this.tickModifier + 1, // 50
             level: 0
         }
-
         this.objectService.initObjectService(this.grid);
 
+        this.createPlayer();
+
+    }
+
+    createPlayer() {
+        this.player = new Player(this, this.objectService);
         this.objectService.addObject(10, 10, this.player);
+    }
+
+    resetService() {
+        console.log('reset')
+        this.game.coinRate = 80 * this.tickModifier;
+        this.game.score = 0;
+        this.game.scoreMultiplier = 1;
+        this.game.enemySpawnRate = 50 * this.tickModifier + 1;
+        this.game.level = 0;
+        this.tickNumber = 1;
+
+        this.inputStack = [];
+        this.coinStack = [];
+        this.enemyStack = [];
+
+        this.gameIsRunning =
+        this.freezePlayer = false;
+        this.deathAnimation = false;
+        this.isGameOver = false;
+
+        this.createPlayer();
     }
 
     getNewGrid(): Grid {
@@ -137,23 +170,31 @@ export class GameService {
         this.calculateEnemyMovements();
         this.calculateProjectileMovements();
         this.calculateEnemyAttacks();
-        this.calculateCollisions();
+
+        if (!this.isGameOver)
+            this.calculateCollisions();
 
         this.calculateEnemySpawn();
         this.calculateCoinSpawn();
 
         this.game.scoreMultiplier = 1 + ((this.game.level + this.objectService.enemies.size) * .1)
 
-        this.addToScore(1);
-
-        this.checkLevelUp();
-
-        this.doExtraInput();
+        if (!this.isGameOver) {
+            this.addToScore(1);
+            this.checkLevelUp();
+            this.doExtraInput();
+        }
 
         this.tickNumber++;
+
     }
 
     calculateInput() {
+
+        if (this.freezePlayer) {
+            return;
+        }
+
         // console.log(this.keyboardService.registeredKeys)
         // console.log("calculating input")
         if (this.tickNumber % this.player.movementSpeed == 0) {
@@ -281,7 +322,7 @@ export class GameService {
         let Enemy = this.objectService.createLottery(this.objectService.availableEnemies);
         let enemy = new Enemy(this, this.objectService);
         this.setObjectDiscovered(enemy);
-        this.randomSpawn(enemy);
+        this.randomSpawn(enemy, new EnemeySpawn(this, this.objectService));
     }
 
     calculateCoinSpawn() {
@@ -335,25 +376,40 @@ export class GameService {
 
                 this.objectService.availableEnemies.set(Sprinter, 1);
             }
+
+            if (this.game.level == 10) {
+                this.coinStack.push(new SuperCoin(this, this.objectService));
+            }
+
+            if (this.game.level == 11) {
+                let randomC = this.getRandomCoordinate();
+                this.objectService.addObject(randomC.x, randomC.y, new Heart(this, this.objectService));
+            }
         }
 
     }
 
-    randomSpawn(obj: TileObject){
+    randomSpawn(obj: TileObject, spawnAnimation?: Animation) {
 
         let coordinate = this.getRandomCoordinate(2, 2);
+
+        if (spawnAnimation) {
+            this.objectService.addObject(coordinate.x, coordinate.y, spawnAnimation);
+
+            setTimeout(() => {
+                this.objectService.addObject(coordinate.x, coordinate.y, obj);
+            }, spawnAnimation.duration);
+
+            return;
+        }
 
         this.objectService.addObject(coordinate.x, coordinate.y, obj);
     }
 
     reset() {
-        this.objectService.clearObjects();
-        this.gameIsRunning = false;
-        this.tickNumber = 0;
-        window.clearInterval(this.windowIntervalObject);
-        this.keyboardService.clearKeys();
-        this.initializeGame();
-
+        this.objectService.resetService();
+        this.keyboardService.resetService();
+        this.resetService();
     }
 
     getRandomCoordinate(padX?: number, padY?: number): Coordinate {
@@ -385,6 +441,32 @@ export class GameService {
         this.game.score = this.game.score + (amt * this.game.scoreMultiplier);
     }
 
+    gameOver(deathObj: TileObject) {
+
+        this.isGameOver = true;
+        this.freezePlayer = true;
+        this.deathAnimation = true;
+
+        setTimeout(() => {
+            window.clearInterval(this.windowIntervalObject);
+            this.deathAnimation = false;
+
+            const dialogRef = this.dialog.open(DeathDialogComponent, {
+                width: '500px',
+                disableClose: true,
+                data: {
+                    deathObject: deathObj,
+                    score: this.game.score
+                }
+            });
+    
+            dialogRef.afterClosed().subscribe(result => {
+
+                this.reset();
+            });
+        }, 3000)
+    }
+
     get enemySpawnRate() {
         return Math.floor(this.game.enemySpawnRate * this.spawnModifier)
     }
@@ -403,7 +485,7 @@ export class GameService {
     localStorage: LocalStorage;
 
     initLocalStorage() {
-        // window.localStorage.clear();
+        window.localStorage.clear();
         // return;
         if (window.localStorage.getItem('gridStorage') == undefined) {
             console.log('setting new local storage');

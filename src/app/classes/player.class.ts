@@ -7,6 +7,7 @@ import { TileObject } from "./tile-object.class";
 import { SuperCoin } from "./items/super-coin.class";
 import { Heart } from "./items/heart.class";
 import { AngryCoin } from "./items/angry-coin.class";
+import { Animation } from "./animation.class";
 
 export class Player extends TileObject {
 
@@ -19,15 +20,24 @@ export class Player extends TileObject {
 
     }
 
+    reset() {
+        this.health = 6;
+    }
+
     onCollision() {
         let collisionObjects = this.getCollisionObjects();
         // console.log(collisionObjects)
         for (let obj of collisionObjects) {
+
+            if (obj instanceof Animation) {
+                continue;
+            }
+
             this.gameService.setObjectDiscovered(obj);
 
             if (obj instanceof Enemy) {
                 this.health -= obj.collisionDamage;
-                this.checkDeath();
+                this.checkDeath(obj);
                 obj.destroy();
             }
 
@@ -52,7 +62,7 @@ export class Player extends TileObject {
 
             if (obj instanceof Projectile) {
                 this.health -= obj.damage;
-                this.checkDeath();
+                this.checkDeath(obj);
                 obj.destroy();
             }
 
@@ -64,17 +74,15 @@ export class Player extends TileObject {
         }
     }
 
-
-    checkDeath() {
+    checkDeath(obj: TileObject) {
         if (this.health < 1) {
-            this.death();
+            this.death(obj);
             return;
         }
     }
 
-    death() {
-        alert("You died")
-        this.gameService.reset();
+    death(obj: TileObject) {
+        this.gameService.gameOver(obj);
     }
 
 }

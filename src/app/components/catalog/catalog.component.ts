@@ -24,11 +24,9 @@ export class CatalogComponent implements OnInit {
     if (item.discovered) {
       this.hoverItem = item;
     }
-    console.log("in:", item);
   }
   mouseOut(item: StorageItem) {
     this.hoverItem = null;
-    console.log("out:", item);
   }
 
 }

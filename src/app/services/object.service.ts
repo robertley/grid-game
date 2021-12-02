@@ -24,15 +24,35 @@ export class ObjectService {
     availableEnemies: Map<typeof Enemy, number> = new Map();
 
     constructor() {
-        this.availableItems.set(Coin, 8);
+        this.initStarterAvailableItems();
+    }
 
+    initObjectService(grid: Grid) {
+        this.grid = grid;
+    }
+
+    initStarterAvailableItems() {
+
+        this.availableItems.clear();
+        this.availableEnemies.clear();
+
+        this.availableItems.set(Coin, 8);
         this.availableEnemies.set(Follower, 6);
         this.availableEnemies.set(BouncerEnemy, 4);
         this.availableEnemies.set(TeleporterEnemy, 1);
     }
 
-    initObjectService(grid: Grid) {
-        this.grid = grid;
+    resetService() {
+
+        for (let [key, object] of this.objects) {
+            object.destroy();
+        }
+        this.objects.clear();
+        this.enemies.clear();
+        this.bossEnemies.clear();
+        this.projectiles.clear();
+        this.initStarterAvailableItems();
+        this.objCount = 0;
     }
 
     addObject(x: number, y: number, obj: TileObject) {
@@ -175,11 +195,7 @@ export class ObjectService {
             currMax += value;
         }
 
-        console.log(lotteryPool)
-
         let winningNumber = Math.floor(Math.random() * currMax);
-
-        console.log(winningNumber)
 
         for (let ticket of lotteryPool) {
             if (ticket.lotteryNumber > winningNumber) {

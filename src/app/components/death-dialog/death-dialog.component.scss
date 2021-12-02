@@ -1,0 +1,29 @@
+.dialog-container {
+
+}
+
+.dialog-header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h3 {
+        display: inline-block;
+    }
+}
+
+.death-object {
+    width: 25px;
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+}
+
+h1 {
+    text-align: center;
+}
+
+.button-container {
+    margin-top: 2em;
+    display: flex;
+    justify-content: center;
+}

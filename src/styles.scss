@@ -1,3 +1,6 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+
 html, body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
@@ -14,6 +17,16 @@ $tile-size: 25px;
     background-color: lime;
 }
 
+button {
+    background-color: blue;
+    color: white;
+    padding: .75em 1.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 // @import './app/styles/animations.style.scss';
 @import './app/styles/enemy.style.scss';
 @import './app/styles/items.style.scss';
+@import './app/styles/animation-objects.scss';
