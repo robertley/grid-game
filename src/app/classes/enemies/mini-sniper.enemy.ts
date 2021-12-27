@@ -1,5 +1,7 @@
 import { GameService } from "src/app/services/game.service";
 import { ObjectService } from "src/app/services/object.service";
+import { EnemyType } from "src/app/types/enemy-type.type";
+import { EliteAnimation } from "../animations/elite.animation.class";
 import { Enemy } from "../enemy.class";
 import { Heart } from "../items/heart.class";
 import { Bullet } from "../projectiles/bullet.class";
@@ -12,18 +14,11 @@ export class MiniSniper extends Enemy {
     maxHealth = 2;
     health = 2;
     attackSpeed = 8;
-
+    enemyType = "mini-boss" as EnemyType;
+    animation = new EliteAnimation(this.gameService, this.objectService)
     tag = "mini-sniper";
 
-
     discoveredBullet = false;
-
-    constructor(gameService: GameService, objectService: ObjectService) {
-        super(gameService, objectService);
-
-        this.enemyType = "mini-boss";
-
-    }
 
     move() {
         

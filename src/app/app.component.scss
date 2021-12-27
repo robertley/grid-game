@@ -3,7 +3,8 @@
     width: 100vw;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-direction: column;
 }
 
 .bottom-hud {
@@ -19,4 +20,9 @@
 .button-container {
     display: flex;
     justify-content: center;
+}
+
+h1 {
+    font-size: 64px;
+    font-style: italic;
 }

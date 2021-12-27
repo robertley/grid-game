@@ -13,9 +13,11 @@
 
 .death-object {
     width: 25px;
+    height: 25px;
     display: flex;
     align-items: center;
     margin-left: 1em;
+    position: relative;
 }
 
 h1 {
@@ -26,4 +28,12 @@ h1 {
     margin-top: 2em;
     display: flex;
     justify-content: center;
+}
+
+.big-fatty-tile, .big-fatty {
+    height: 96px;
+    width: 96px;
+    background-color: red;
+    border: 2px black solid;
+    z-index: 103;
 }

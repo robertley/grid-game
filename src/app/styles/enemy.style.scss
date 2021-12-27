@@ -1,7 +1,8 @@
 
-$z-basic-enemy: 101;
-$z-projectile: 103;
-$z-elite-enemy: 102;
+$z-basic-enemy: 102;
+$z-projectile: 104;
+$z-elite-enemy: 103;
+$z-big-fatty: 101;
 
 .follower {
     background-color: red;
@@ -61,4 +62,19 @@ $z-elite-enemy: 102;
     width: 20px;
     height: 20px;
     z-index: $z-elite-enemy;
+}
+
+.big-fatty-tile {
+    background-color: transparent;
+}
+
+.big-fatty {
+    height: 96px;
+    width: 96px;
+    background-color: red;
+    // background-color: transparent;
+    border: 2px black solid;
+    top: -50px;
+    left: -25px;
+    z-index: $z-big-fatty;
 }

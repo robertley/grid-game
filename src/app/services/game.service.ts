@@ -24,6 +24,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { DeathDialogComponent } from "../components/death-dialog/death-dialog.component";
 import { Animation } from "../classes/animation.class";
 import { EnemeySpawn } from "../classes/animations/enemy-spawn-class";
+import { BigFattyMain } from "../classes/enemies/big-fatty-main.enemy";
+import { BigFattyAnimation } from "../classes/animations/big-fatty-animation.class";
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +38,7 @@ export class GameService {
     grid: Grid;
     player: Player;
 
-    gameWidth = 20;
+    gameWidth = 21;
     gameHeight = 20;
 
     gameIsRunning = false;
@@ -73,7 +75,7 @@ export class GameService {
             coinRate: 80 * this.tickModifier,
             score: 0,
             scoreMultiplier: 1,
-            enemySpawnRate: 50 * this.tickModifier + 1, // 50
+            enemySpawnRate: 56 * this.tickModifier + 1, // 50
             level: 0
         }
         this.objectService.initObjectService(this.grid);
@@ -92,7 +94,7 @@ export class GameService {
         this.game.coinRate = 80 * this.tickModifier;
         this.game.score = 0;
         this.game.scoreMultiplier = 1;
-        this.game.enemySpawnRate = 50 * this.tickModifier + 1;
+        this.game.enemySpawnRate = 56 * this.tickModifier + 1;
         this.game.level = 0;
         this.tickNumber = 1;
 
@@ -112,9 +114,9 @@ export class GameService {
         let grid: Grid;
         let tiles: Tile[][] = [];
 
-        for (let y = 0; y < this.gameWidth; y++) {
+        for (let y = 0; y < this.gameHeight; y++) {
             let row: Tile[] = [];
-            for (let x = 0; x < this.gameHeight; x++) {
+            for (let x = 0; x < this.gameWidth; x++) {
                 row.push(new Tile(x, y))
             }
             tiles.push(row);
@@ -122,14 +124,14 @@ export class GameService {
 
         let hiddenTiles: Tile[][] = [[], [], [], []];
 
-        for (let y = 0; y < this.gameWidth; y++) {
+        for (let y = 0; y < this.gameHeight; y++) {
             let row1 = hiddenTiles[1]
             let row2 = hiddenTiles[3]
             
             row1.push(new Tile(-1, y, 1));
             row2.push(new Tile(-1, y, 3));
         }
-        for (let x = 0; x < this.gameHeight; x++) {
+        for (let x = 0; x < this.gameWidth; x++) {
             let row1 = hiddenTiles[0]
             let row2 = hiddenTiles[2]
             
@@ -155,12 +157,12 @@ export class GameService {
         // this.objectService.addHiddenObject(1, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(2, 1, new MiniSniper(this,this.objectService));
         // this.objectService.addHiddenObject(3, 1, new MiniSniper(this,this.objectService));
-
-        // this.objectService.addObject(15, 10, new SuperCoin(this, this.objectService));
-        // this.objectService.addObject(5, 10, new Heart(this, this.objectService));
+// // 
 
         // this.enemyStack.push(new Sprinter(this,this.objectService))
         // this.spawnEnemy();
+
+        // this.createBigFatty();
 
         console.log(this.grid)
     }
@@ -177,10 +179,10 @@ export class GameService {
         this.calculateEnemySpawn();
         this.calculateCoinSpawn();
 
-        this.game.scoreMultiplier = 1 + ((this.game.level + this.objectService.enemies.size) * .1)
+        this.calculateGameMultiplier();
 
         if (!this.isGameOver) {
-            this.addToScore(1);
+            this.addToScore(10);
             this.checkLevelUp();
             this.doExtraInput();
         }
@@ -189,7 +191,11 @@ export class GameService {
 
     }
 
+    slow = false;
+
     calculateInput() {
+
+        let foundSlow = false;
 
         if (this.freezePlayer) {
             return;
@@ -200,6 +206,15 @@ export class GameService {
         if (this.tickNumber % this.player.movementSpeed == 0) {
             for (let [key, value] of this.keyboardService.registeredKeys) {
                 switch (key) {
+
+                    case KEY_CODE.SPACE:
+                        if (!this.slow) {
+                            this.slow = true;
+                        }
+                        // console.log("found slow")
+                        foundSlow = true;
+                        break;
+
                     case KEY_CODE.UP_ARROW:
                         this.player.moveUp();
                         break;
@@ -243,6 +258,11 @@ export class GameService {
                 }
             }
         }
+
+        if (this.slow && !foundSlow) {
+            // console.log("not slow")
+            // this.slow = false;
+        }
     }
 
     doExtraInput() {
@@ -268,7 +288,7 @@ export class GameService {
 
     calculateEnemyMovements() {
         for (let [key, enemy] of this.objectService.enemies) {
-            if ((this.tickNumber - enemy.spawnTick) % enemy.movementSpeed == 0) {
+            if ((this.tickNumber - enemy.spawnTick) * (this.slow ? 2 : 1) % enemy.movementSpeed == 0) {
                 enemy.move();
             }
         }
@@ -317,18 +337,26 @@ export class GameService {
             }
 
             this.randomSpawn(enemy);
+            return;
         }
         
         let Enemy = this.objectService.createLottery(this.objectService.availableEnemies);
         let enemy = new Enemy(this, this.objectService);
         this.setObjectDiscovered(enemy);
-        this.randomSpawn(enemy, new EnemeySpawn(this, this.objectService));
+        this.randomSpawn(enemy);
     }
 
     calculateCoinSpawn() {
         if (this.tickNumber % this.coinRate == 0) {
             this.spawnCoin();
         }
+    }
+
+    calculateGameMultiplier() {
+        let enemyArray = Array.from(this.objectService.enemies.values()).filter(enemy => {
+            return !enemy.trigger;
+        })
+        this.game.scoreMultiplier = 1 + ((this.game.level + enemyArray.length) * .1)
     }
 
     spawnCoin() {
@@ -348,13 +376,17 @@ export class GameService {
 
             this.game.level++;
 
-            if (this.game.level == 2) {
+            if (this.game.level == 1) {
+                // this.enemyStack.push(new MiniSniper(this,this.objectService));
+                // this.spawnEnemy();
                 // this.enemyStack.push(new Sprinter(this,this.objectService))
                 // this.spawnEnemy();
             }
 
             if (this.game.level == 5) {
                 this.enemyStack.push(new MiniSniper(this,this.objectService));
+                this.spawnEnemy();
+
                 this.objectService.availableItems.set(AngryCoin, 2);
             }
 
@@ -378,31 +410,23 @@ export class GameService {
             }
 
             if (this.game.level == 10) {
-                this.coinStack.push(new SuperCoin(this, this.objectService));
+                // this.coinStack.push(new SuperCoin(this, this.objectService));
             }
 
             if (this.game.level == 11) {
                 let randomC = this.getRandomCoordinate();
-                this.objectService.addObject(randomC.x, randomC.y, new Heart(this, this.objectService));
+                // this.objectService.addObject(randomC.x, randomC.y, new Heart(this, this.objectService));
+                this.createBigFatty();
+            }
+            if (this.game.level == 13) {
+                this.coinStack.push(new SuperCoin(this,this.objectService))
             }
         }
 
     }
 
-    randomSpawn(obj: TileObject, spawnAnimation?: Animation) {
-
+    randomSpawn(obj: TileObject) {
         let coordinate = this.getRandomCoordinate(2, 2);
-
-        if (spawnAnimation) {
-            this.objectService.addObject(coordinate.x, coordinate.y, spawnAnimation);
-
-            setTimeout(() => {
-                this.objectService.addObject(coordinate.x, coordinate.y, obj);
-            }, spawnAnimation.duration);
-
-            return;
-        }
-
         this.objectService.addObject(coordinate.x, coordinate.y, obj);
     }
 
@@ -412,10 +436,14 @@ export class GameService {
         this.resetService();
     }
 
-    getRandomCoordinate(padX?: number, padY?: number): Coordinate {
+    getRandomCoordinate(padX?: number, padY?: number, boardPadX?: number, boardPadY?: number): Coordinate {
+        
+       boardPadX = boardPadX ?? 0;
+       boardPadY = boardPadY ?? 0;
+
        let coordinate: Coordinate = {
-           x: Math.floor(Math.random() * (this.gameWidth - 1)),
-           y: Math.floor(Math.random() * (this.gameHeight - 1))
+           x: Math.floor(Math.random() * ((this.gameWidth - 1) - boardPadX)),
+           y: Math.floor(Math.random() * ((this.gameHeight - 1) - boardPadY))
        }
 
        padX = padX ?? 0;
@@ -425,8 +453,8 @@ export class GameService {
             Math.abs(this.player.location.y - coordinate.y) < padY) {
 
             coordinate = {
-                x: Math.floor(Math.random() * (this.gameWidth - 1)),
-                y: Math.floor(Math.random() * (this.gameHeight - 1))
+                x: Math.floor(Math.random() * ((this.gameWidth - 1) - boardPadX)),
+                y: Math.floor(Math.random() * ((this.gameHeight - 1) - boardPadY))
             }
         }
 
@@ -463,6 +491,7 @@ export class GameService {
             dialogRef.afterClosed().subscribe(result => {
 
                 this.reset();
+
             });
         }, 3000)
     }
@@ -475,6 +504,15 @@ export class GameService {
         return Math.floor(this.game.coinRate * this.spawnModifier)
     }
 
+    createBigFatty() {
+        let coor = this.getRandomCoordinate(0, 0, 4, 4);
+
+        console.log(coor)
+        let fatty = this.objectService.addObject(coor.x + 1, coor.y + 2, new BigFattyMain(this, this.objectService));
+
+        this.setObjectDiscovered(fatty);
+    }
+
 
 
 
@@ -485,7 +523,7 @@ export class GameService {
     localStorage: LocalStorage;
 
     initLocalStorage() {
-        window.localStorage.clear();
+        // window.localStorage.clear();
         // return;
         if (window.localStorage.getItem('gridStorage') == undefined) {
             console.log('setting new local storage');
@@ -559,6 +597,12 @@ export class GameService {
                                 discovered: discoverDefault,
                                 description: "He is determined to catch you.",
                                 ...this.getItemStorageData(Sprinter)
+                            },
+                            {
+                                name: "Big Fatty",
+                                discovered: discoverDefault,
+                                description: "Beeeeeeeeeeg",
+                                ...this.getItemStorageData(BigFattyMain)
                             }
                         ]
                     }

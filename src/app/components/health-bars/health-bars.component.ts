@@ -21,6 +21,7 @@ export class HealthBarsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this)
   }
 
   get bosses(): Enemy[] {

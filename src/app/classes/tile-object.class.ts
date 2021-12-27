@@ -1,8 +1,6 @@
-
-import { Injector } from "@angular/core";
-import { Game } from "../interfaces/game.interface";
 import { GameService } from "../services/game.service";
 import { ObjectService } from "../services/object.service";
+import { Animation } from "./animation.class";
 import { Tile } from "./tile.class";
 
 export class TileObject {
@@ -16,6 +14,10 @@ export class TileObject {
     hiddenSection: 0 | 1 | 2 | 3 | undefined;
 
     subClass: string;
+
+    trigger: boolean = false;
+
+    animation: Animation;
 
     protected gameService: GameService;
     protected objectService: ObjectService;

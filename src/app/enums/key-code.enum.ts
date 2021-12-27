@@ -7,5 +7,7 @@ export enum KEY_CODE {
     W = "w",
     A = "a",
     S = "s",
-    D = "d"
+    D = "d",
+
+    SPACE = " "
 }

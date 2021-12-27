@@ -8,6 +8,7 @@ import { SuperCoin } from "./items/super-coin.class";
 import { Heart } from "./items/heart.class";
 import { AngryCoin } from "./items/angry-coin.class";
 import { Animation } from "./animation.class";
+import { BigFatty } from "./enemies/big-fatty.enemy";
 
 export class Player extends TileObject {
 
@@ -38,7 +39,10 @@ export class Player extends TileObject {
             if (obj instanceof Enemy) {
                 this.health -= obj.collisionDamage;
                 this.checkDeath(obj);
-                obj.destroy();
+
+                if (!(obj instanceof BigFatty)) {
+                    obj.destroy();
+                }
             }
 
             if (obj instanceof AngryCoin) {

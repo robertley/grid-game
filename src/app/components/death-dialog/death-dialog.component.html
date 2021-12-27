@@ -6,7 +6,7 @@
         </div>
     </div>
 
-    <h1>SCORE: {{data.score.toFixed(1)}}</h1>
+    <h1>SCORE: {{formatScore(data.score)}}</h1>
 
     <div class="button-container">
         <button (click)="closeDialog()">Try Again?</button>

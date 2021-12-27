@@ -56,6 +56,48 @@ export class ObjectService {
     }
 
     addObject(x: number, y: number, obj: TileObject) {
+        // console.log("add:", obj)
+
+        try {
+            if (obj.animation == null) {
+                return this.placeObject(x, y, obj);
+            }
+    
+            this.placeObject(x, y, obj.animation);
+            // console.log("placing animation", obj.animation)
+    
+            setTimeout(() => {
+                this.placeObject(x, y, obj)
+            }, obj.animation.duration);
+    
+            return obj;
+        } catch (error) {
+            console.error(error)
+            console.error("add object error")
+            console.log("!!!", obj, x, y,)
+            return undefined;
+        }
+
+    }
+
+    addHiddenObject(hiddenSection: 0 | 1 | 2 | 3, i: number, obj: TileObject) {
+        
+        if (obj.animation == null) {
+            return this.placeHiddenObject(hiddenSection, i, obj);
+        }
+
+        this.placeHiddenObject(hiddenSection, i, obj.animation);
+
+        console.log(obj.animation.duration)
+
+        setTimeout(() => {
+            this.placeHiddenObject(hiddenSection, i, obj);
+        }, obj.animation.duration);
+
+        return obj;
+    }
+
+    placeObject(x: number, y: number, obj: TileObject) {
         obj.id = this.objCount;
         let tile = this.grid.tiles[y][x];
         tile.objects.push(obj);
@@ -76,9 +118,11 @@ export class ObjectService {
         }
 
         this.objCount++;
+
+        return obj;
     }
 
-    addHiddenObject(hiddenSection: 0 | 1 | 2 | 3, i: number, obj: TileObject) {
+    placeHiddenObject(hiddenSection: 0 | 1 | 2 | 3, i: number, obj: TileObject) {
         obj.id = this.objCount;
         let tile = this.grid.hiddenTiles[hiddenSection][i];
         tile.objects.push(obj);
@@ -96,17 +140,24 @@ export class ObjectService {
 
         this.objCount++;
 
+        return obj;
     }
 
     removeObject(obj: TileObject) {
-        this.objects.delete(obj.id);
-        obj.location.removeObject(obj);
-
-        if (obj instanceof Enemy) {
-            this.removeEnemy(obj);
-        }
-        if (obj instanceof Projectile) {
-            this.removeProjectile(obj);
+        try {
+            this.objects.delete(obj.id);
+            obj.location.removeObject(obj);
+    
+            if (obj instanceof Enemy) {
+                this.removeEnemy(obj);
+            }
+            if (obj instanceof Projectile) {
+                this.removeProjectile(obj);
+            }
+        } catch (error) {
+            console.error(error)
+            console.log("Remove Object Error:", obj)
+            console.log("Remove Object Location:", obj.location)
         }
     }
 
@@ -124,11 +175,18 @@ export class ObjectService {
 
             let enemiesArr = Array.from(this.enemies.values());
 
+            // Enemies can be triggers. We do not want to include triggers in the damage pool
+            enemiesArr = enemiesArr.filter(enemy => {
+                return !enemy.trigger
+            })
+
+            if (enemiesArr.length < 1) {
+                return;
+            }
+
             let enemy = enemiesArr[Math.floor(Math.random() * enemiesArr.length)];
     
-            if (enemy) {
-                enemy.doDamage(1);
-            }
+            enemy.doDamage(damage);
         }
 
     }
@@ -173,7 +231,7 @@ export class ObjectService {
 
     removeEnemy(enemy: Enemy) {
         this.enemies.delete(enemy.id);
-        if (enemy.enemyType = "mini-boss") {
+        if (enemy.enemyType == "mini-boss") {
             this.bossEnemies.delete(enemy.id);
         }
     }

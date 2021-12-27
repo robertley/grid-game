@@ -25,6 +25,10 @@ export class HudComponent implements OnInit {
     return health;
   }
 
+  formatScore(score: number) {
+    return score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   get player() {
     return this.gameService.player;
   }

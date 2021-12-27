@@ -3,7 +3,7 @@ import { ObjectService } from "../services/object.service";
 import { TileObject } from "./tile-object.class";
 
 export class Animation extends TileObject {
-    duration: number;
+    duration: number = 2000;
     tag="animation"
 
     constructor(gameService: GameService, objectService: ObjectService, duration: number) {
@@ -17,7 +17,9 @@ export class Animation extends TileObject {
     }
 
     setDestroy() {
+        console.log("set destroy:", this)
         setTimeout(() => {
+            console.log("destroy:",this, this.duration)
             this.destroy();
         }, this.duration)
     }

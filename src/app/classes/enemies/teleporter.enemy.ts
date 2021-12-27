@@ -1,5 +1,6 @@
 import { GameService } from "src/app/services/game.service";
 import { ObjectService } from "src/app/services/object.service";
+import { EnemeySpawn } from "../animations/enemy-spawn-class";
 import { Enemy } from "../enemy.class";
 
 export class TeleporterEnemy extends Enemy {
@@ -10,6 +11,8 @@ export class TeleporterEnemy extends Enemy {
     forwards = true;
 
     tag = "teleporter"
+    animation = new EnemeySpawn(this.gameService, this.objectService);
+
 
     constructor(gameService: GameService, objectService: ObjectService) {
         super(gameService, objectService);

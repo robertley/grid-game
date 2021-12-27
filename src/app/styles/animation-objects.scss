@@ -2,11 +2,30 @@ $animation-z: 104;
 
 @import 'animations.style.scss';
 
-.enemy-spawn {
+.enemy-spawn, .elite-enemy-spawn {
     background-color: red;
     opacity: 0;
     border-radius: 0;
     animation: enemySpawn 1s infinite alternate;
     z-index: $animation-z;
     border-radius: 5px;
+}
+
+.elite-enemy-spawn {
+    box-shadow: 0 0 0 2px white,
+                0 0 0 5px black;}
+
+.big-fatty-spawn {
+    height: 100px;
+    width: 100px;
+    background-color: red;
+    // background-color: transparent;
+    // border: 2px black solid;
+    top: -50px;
+    left: -25px;
+
+    z-index: 103;
+    opacity: 0;
+    animation: enemySpawn 1s infinite alternate;
+    z-index: $animation-z;
 }

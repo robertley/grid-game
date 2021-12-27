@@ -23,6 +23,10 @@ export class DeathDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  formatScore(score: number) {
+    return score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }  
+
 }
 
 

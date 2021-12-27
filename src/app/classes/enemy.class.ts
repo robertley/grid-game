@@ -1,6 +1,8 @@
 import { GameService } from "../services/game.service";
 import { ObjectService } from "../services/object.service";
 import { EnemyType } from "../types/enemy-type.type";
+import { Animation } from "./animation.class";
+import { EnemeySpawn } from "./animations/enemy-spawn-class";
 import { TileObject } from "./tile-object.class";
 
 export class Enemy extends TileObject {
