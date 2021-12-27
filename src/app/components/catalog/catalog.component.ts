@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorage, StorageItem } from 'src/app/interfaces/local-storage.interface';
+import { DiscoverItemData, StorageItem } from 'src/app/interfaces/local-storage.interface';
 import { GameService } from 'src/app/services/game.service';
 
 @Component({
@@ -9,12 +9,12 @@ import { GameService } from 'src/app/services/game.service';
 })
 export class CatalogComponent implements OnInit {
 
-  localStorage: LocalStorage;
+  discoverItemData: DiscoverItemData;
 
   hoverItem: StorageItem;
 
   constructor(private gameService: GameService) {
-    this.localStorage = gameService.localStorage;
+    this.discoverItemData = gameService.discoverItemData;
   }
 
   ngOnInit(): void {

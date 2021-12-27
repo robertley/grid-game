@@ -17,9 +17,7 @@ export class Animation extends TileObject {
     }
 
     setDestroy() {
-        console.log("set destroy:", this)
         setTimeout(() => {
-            console.log("destroy:",this, this.duration)
             this.destroy();
         }, this.duration)
     }

@@ -1,7 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Coin } from './classes/items/coin.class';
 import { KEY_CODE } from './enums/key-code.enum';
-import { LocalStorage } from './interfaces/local-storage.interface';
 import { GameService } from './services/game.service';
 import { KeyboardService } from './services/keyboard.service';
 
@@ -13,7 +12,7 @@ import { KeyboardService } from './services/keyboard.service';
 export class AppComponent {
   title = 'grid-game';
 
-  localStorage: LocalStorage;
+  discoverItemData;
 
   constructor(private gameService: GameService, private keyboardService: KeyboardService) {
   }

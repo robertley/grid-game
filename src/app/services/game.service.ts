@@ -17,7 +17,7 @@ import { ObjectService } from "./object.service";
 import { SuperCoin } from "../classes/items/super-coin.class";
 import { Sprinter } from "../classes/enemies/sprinter.enemy";
 import { AngryCoin } from "../classes/items/angry-coin.class";
-import { LocalStorage } from "../interfaces/local-storage.interface";
+import { DiscoverItemData } from "../interfaces/local-storage.interface";
 import { Heart } from "../classes/items/heart.class";
 import { Bullet } from "../classes/projectiles/bullet.class";
 import { MatDialog } from "@angular/material/dialog";
@@ -26,6 +26,7 @@ import { Animation } from "../classes/animation.class";
 import { EnemeySpawn } from "../classes/animations/enemy-spawn-class";
 import { BigFattyMain } from "../classes/enemies/big-fatty-main.enemy";
 import { BigFattyAnimation } from "../classes/animations/big-fatty-animation.class";
+import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -58,11 +59,14 @@ export class GameService {
 
     private spawnModifier = 1;
 
-    constructor(private keyboardService: KeyboardService, private objectService: ObjectService, public dialog: MatDialog) {
+    constructor(private keyboardService: KeyboardService,
+                private objectService: ObjectService,
+                public dialog: MatDialog,
+                private localStorageService: LocalStorageService) {
 
         this.grid = this.getNewGrid();
 
-        this.initLocalStorage();
+        this.initDiscoverItemData();
 
         this.initializeGame();
     }
@@ -90,7 +94,6 @@ export class GameService {
     }
 
     resetService() {
-        console.log('reset')
         this.game.coinRate = 80 * this.tickModifier;
         this.game.score = 0;
         this.game.scoreMultiplier = 1;
@@ -520,102 +523,84 @@ export class GameService {
     
     // #region local storage
 
-    localStorage: LocalStorage;
+    discoverItemData: DiscoverItemData;
 
-    initLocalStorage() {
-        // window.localStorage.clear();
-        // return;
-        if (window.localStorage.getItem('gridStorage') == undefined) {
-            console.log('setting new local storage');
-            let discoverDefault = false;
-            let localStorage: LocalStorage = {
-                items: [
-                    {
-                        groupName: "Items",
-                        storageItems: [
-                            {
-                                name: "Coin",
-                                discovered: discoverDefault,
-                                description: "After collecting does 1 damage to a random enemy.",
-                                ...this.getItemStorageData(Coin)
-                            },
-                            {
-                                name: "Angry Coin",
-                                discovered: discoverDefault,
-                                description: "After collecting does 1 damage to one of the strongest enemies.",
-                                ...this.getItemStorageData(AngryCoin)
-                            },
-                            {
-                                name: "Super Coin",
-                                discovered: discoverDefault,
-                                description: "After collecting does 1 damage to a random enemy five times.",
-                                ...this.getItemStorageData(SuperCoin)
-                            },
-                            {
-                                name: "Heart",
-                                discovered: discoverDefault,
-                                description: "Grants 2 health.",
-                                ...this.getItemStorageData(Heart)
-                            }
-                        ]
-                    },
-                    {
-                        groupName: "Enemies",
-                        storageItems: [
-                            {
-                                name: "Follower",
-                                discovered: discoverDefault,
-                                description: "He follows ya",
-                                ...this.getItemStorageData(Follower)
-                            },
-                            {
-                                name: "Bouncer",
-                                discovered: discoverDefault,
-                                description: "Bouncey boi",
-                                ...this.getItemStorageData(BouncerEnemy)
-                            },
-                            {
-                                name: "Teleporter",
-                                discovered: discoverDefault,
-                                description: "Checkmate flat-earthers.",
-                                ...this.getItemStorageData(TeleporterEnemy)
-                            },
-                            {
-                                name: "Mini Sniper",
-                                discovered: discoverDefault,
-                                description: "Mini Sniper goes brrrrrrrrrrrr",
-                                ...this.getItemStorageData(MiniSniper)
-                            },
-                            {
-                                name: "Bullet",
-                                discovered: discoverDefault,
-                                description: "pew",
-                                ...this.getItemStorageData(Bullet)
-                            },
-                            {
-                                name: "Sprinter",
-                                discovered: discoverDefault,
-                                description: "He is determined to catch you.",
-                                ...this.getItemStorageData(Sprinter)
-                            },
-                            {
-                                name: "Big Fatty",
-                                discovered: discoverDefault,
-                                description: "Beeeeeeeeeeg",
-                                ...this.getItemStorageData(BigFattyMain)
-                            }
-                        ]
-                    }
-                ]
-            }
-      
-            this.localStorage = localStorage;
-            this.setLocalStorageToMemory();
+    initDiscoverItemData() {
+
+        let discoverDefault = false;
+        let discoverItemData: DiscoverItemData = {
+            items: [
+                {
+                    groupName: "Items",
+                    storageItems: [
+                        {
+                            name: "Coin",
+                            description: "After collecting does 1 damage to a random enemy.",
+                            ...this.getItemStorageData(Coin)
+                        },
+                        {
+                            name: "Angry Coin",
+                            description: "After collecting does 1 damage to one of the strongest enemies.",
+                            ...this.getItemStorageData(AngryCoin)
+                        },
+                        {
+                            name: "Super Coin",
+                            description: "After collecting does 1 damage to a random enemy five times.",
+                            ...this.getItemStorageData(SuperCoin)
+                        },
+                        {
+                            name: "Heart",
+                            description: "Grants 2 health.",
+                            ...this.getItemStorageData(Heart)
+                        }
+                    ]
+                },
+                {
+                    groupName: "Enemies",
+                    storageItems: [
+                        {
+                            name: "Follower",
+                            description: "He follows ya",
+                            ...this.getItemStorageData(Follower)
+                        },
+                        {
+                            name: "Bouncer",
+                            description: "Bouncey boi",
+                            ...this.getItemStorageData(BouncerEnemy)
+                        },
+                        {
+                            name: "Teleporter",
+                            description: "Checkmate flat-earthers.",
+                            ...this.getItemStorageData(TeleporterEnemy)
+                        },
+                        {
+                            name: "Mini Sniper",
+                            description: "Mini Sniper goes brrrrrrrrrrrr",
+                            ...this.getItemStorageData(MiniSniper)
+                        },
+                        {
+                            name: "Bullet",
+                            description: "pew",
+                            ...this.getItemStorageData(Bullet)
+                        },
+                        {
+                            name: "Sprinter",
+                            description: "He is determined to catch you.",
+                            ...this.getItemStorageData(Sprinter)
+                        },
+                        {
+                            name: "Big Fatty",
+                            description: "Beeeeeeeeeeg",
+                            ...this.getItemStorageData(BigFattyMain)
+                        }
+                    ]
+                }
+            ]
         }
-      
-        this.localStorage = JSON.parse(window.localStorage.getItem('gridStorage'));
-
-        console.log("Local Storage:",this.localStorage)
+    
+        this.discoverItemData = discoverItemData;
+        
+        console.log(this.discoverItemData)
     }
 
     
@@ -623,17 +608,15 @@ export class GameService {
         let item = new ItemClass(this, this.objectService);
         return {
             htmlClass: item.getHtmlClass(),
-            tag: item.tag
+            tag: item.tag,
+            discovered: this.localStorageService.getLocalStorageItem(item.tag) ?? false
         }
     }
 
-    setLocalStorageToMemory() {
-        window.localStorage.setItem('gridStorage', JSON.stringify(this.localStorage))
-    }
 
     setObjectDiscovered(obj: TileObject) {
         let found = false;
-        for (let group of this.localStorage.items) {
+        for (let group of this.discoverItemData.items) {
             for (let item of group.storageItems) {
                 if (obj.tag == item.tag) {
                     if (item.discovered) {
@@ -650,7 +633,7 @@ export class GameService {
             }
         }
 
-        this.setLocalStorageToMemory();
+        this.localStorageService.setLocalStorageItem(obj.tag, true);
     }
 
 
