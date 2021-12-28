@@ -44,3 +44,78 @@ $glow-color: rgb(255, 0, 212, .8);
         opacity: .8;
     }
 }
+
+
+@keyframes explode {
+    0% {
+        background-color: black;
+    }
+    50% {
+        background-color: black;
+    }
+    70% {
+        background-color: #8c3600;
+    }
+    80% {
+        background-color: #f1800f;
+    }
+    90% {
+        background-color: #f1d31c;
+    }
+    100% {
+        background-color: rgb(255, 254, 254)
+    }
+}
+
+@keyframes bombShake {
+    0% {
+        top: 0px;
+        left: 0px;
+    }
+
+    60% {
+        top: 0px;
+        left: 0px;
+    }
+    65% {
+        top: -1px;
+        left: -1px;
+    }
+    75% {
+        top: 1px;
+        left: 1px;
+    }
+    78% {
+        top: 0px;
+        left: 0px;
+    }
+    80% {
+        top: 1px;
+        left: -1px;
+    }
+    82% {
+        top: 0px;
+        left: 1px;
+    }
+    84% {
+        top: -1px;
+        left: -1px;
+    }
+    86% {
+        top: 1px;
+        left: 1px;
+    }
+    88% {
+        top: 0px;
+        left: 0px;
+    }
+    90% {
+        top: 1px;
+        left: -1px;
+    }
+    91% {
+        top: 0px;
+        left: 1px;
+    }
+}
+

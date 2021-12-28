@@ -155,9 +155,9 @@ export class ObjectService {
                 this.removeProjectile(obj);
             }
         } catch (error) {
-            console.error(error)
-            console.log("Remove Object Error:", obj)
-            console.log("Remove Object Location:", obj.location)
+            // console.error(error)
+            // console.log("Remove Object Error:", obj)
+            // console.log("Remove Object Location:", obj.location)
         }
     }
 

@@ -37,3 +37,20 @@ h1 {
     border: 2px black solid;
     z-index: 103;
 }
+
+.new-highscore {
+    text-align: center;
+}
+
+.highscore-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    button {
+        padding: .5em 1em;
+    }
+    input {
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+}

@@ -1,3 +1,4 @@
+@import './animations.style.scss';
 
 $z-basic-enemy: 102;
 $z-projectile: 104;
@@ -77,4 +78,27 @@ $z-big-fatty: 101;
     top: -50px;
     left: -25px;
     z-index: $z-big-fatty;
+}
+
+.bomb {
+    background-color: black;
+    z-index: $z-basic-enemy;
+    animation: explode 5s 1, bombShake 5s 1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    // animation: bombShake 5s 1;
+}
+
+.bomber {
+    background-color: #f33864;
+    box-shadow: 0 0 0 6px white,
+                0 0 0 8px black;
+    left: 7px;
+    top: 7px;
+    width: 11px;
+    height: 11px;
+    z-index: $z-basic-enemy;
+    margin-right: 5px;
+
 }

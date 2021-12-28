@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Highscore } from '../../interfaces/highscore.interface';
+import { HighscoreService } from '../../services/highscore.service';
+import { first } from 'rxjs/operators';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-highscores',
@@ -7,9 +11,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HighscoresComponent implements OnInit {
 
-  constructor() { }
+  constructor(private highscoreService: HighscoreService) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    console.log('highscores init')
+    await this.highscoreService.getHighscores().pipe(first()).toPromise();
+    console.log(this.highscores)
   }
 
+  
+  formatScore(score: number) {
+    return score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  get yourHighscore() {
+    return this.highscoreService.yourHighscore;
+  }
+
+  get highscores() {
+    return this.highscoreService.highscores;
+  }
 }

@@ -12,6 +12,10 @@ export class LocalStorageService {
         if (browserStorage) {
           this.localStorage = JSON.parse(browserStorage, reviver);
         }
+        let highscore = this.getLocalStorageItem('highscore');
+        if (!highscore) {
+          this.setLocalStorageItem('highscore', 0);
+        }
     }
 
     getLocalStorageItem(key: string) {

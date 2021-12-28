@@ -26,3 +26,15 @@ h1 {
     font-size: 64px;
     font-style: italic;
 }
+
+.how-to-play {
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    span {
+        cursor: pointer;
+    }
+    span:hover {
+        text-decoration: underline;
+    }
+}

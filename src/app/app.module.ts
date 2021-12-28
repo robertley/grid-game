@@ -10,6 +10,9 @@ import { HighscoresComponent } from './components/highscores/highscores.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DeathDialogComponent } from './components/death-dialog/death-dialog.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HowToPlayComponent } from './components/how-to-play/how-to-play.component';
 
 @NgModule({
   declarations: [
@@ -19,12 +22,16 @@ import { DeathDialogComponent } from './components/death-dialog/death-dialog.com
     HealthBarsComponent,
     CatalogComponent,
     HighscoresComponent,
-    DeathDialogComponent
+    DeathDialogComponent,
+    HowToPlayComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

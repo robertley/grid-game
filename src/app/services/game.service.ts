@@ -27,6 +27,8 @@ import { EnemeySpawn } from "../classes/animations/enemy-spawn-class";
 import { BigFattyMain } from "../classes/enemies/big-fatty-main.enemy";
 import { BigFattyAnimation } from "../classes/animations/big-fatty-animation.class";
 import { LocalStorageService } from "./local-storage.service";
+import { Bomber } from "../classes/enemies/bomber.enemy";
+import { Bomb } from "../classes/enemies/bomb.enemy";
 
 @Injectable({
     providedIn: 'root'
@@ -162,8 +164,16 @@ export class GameService {
         // this.objectService.addHiddenObject(3, 1, new MiniSniper(this,this.objectService));
 // // 
 
-        // this.enemyStack.push(new Sprinter(this,this.objectService))
-        // this.spawnEnemy();
+        this.enemyStack.push(new Bomber(this,this.objectService))
+        this.spawnEnemy();
+        this.enemyStack.push(new Bomber(this,this.objectService))
+        this.spawnEnemy();
+        this.enemyStack.push(new Bomber(this,this.objectService))
+        this.spawnEnemy();
+        this.enemyStack.push(new Bomber(this,this.objectService))
+        this.spawnEnemy();
+        this.enemyStack.push(new Bomber(this,this.objectService))
+        this.spawnEnemy();
 
         // this.createBigFatty();
 
@@ -179,8 +189,8 @@ export class GameService {
         if (!this.isGameOver)
             this.calculateCollisions();
 
-        this.calculateEnemySpawn();
-        this.calculateCoinSpawn();
+        // this.calculateEnemySpawn();
+        // this.calculateCoinSpawn();
 
         this.calculateGameMultiplier();
 
@@ -307,7 +317,7 @@ export class GameService {
 
     calculateEnemyAttacks() {
         for (let [key, enemy] of this.objectService.enemies) {
-            if ((this.tickNumber - enemy.spawnTick) % enemy.attackSpeed == 0) {
+            if ((this.tickNumber - enemy.spawnTick + 1) % enemy.attackSpeed == 0) {
                 enemy.attack();
             }
         }
@@ -587,6 +597,16 @@ export class GameService {
                             name: "Sprinter",
                             description: "He is determined to catch you.",
                             ...this.getItemStorageData(Sprinter)
+                        },
+                        {
+                            name: "Bomber",
+                            description: "He's a bomber, man.",
+                            ...this.getItemStorageData(Bomber)
+                        },
+                        {
+                            name: "Bomb",
+                            description: "Bomb goes boom",
+                            ...this.getItemStorageData(Bomb)
                         },
                         {
                             name: "Big Fatty",

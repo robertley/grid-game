@@ -4,4 +4,36 @@
     width: 250px;
     border: 1px solid gray;
     padding: 2em;
+    position: relative;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.your-high {
+    position: absolute;
+    top: -1.5em;
+}
+
+.item-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.rank-1 {
+    font-size: 1.5em;
+}
+.rank-2 {
+    font-size: 1.3em;
+}
+.rank-3 {
+    font-size: 1.15em;
+}
+
+.score {
+    display: flex;
+    align-content: center;
 }

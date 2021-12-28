@@ -8,6 +8,19 @@
 
     <h1>SCORE: {{formatScore(data.score)}}</h1>
 
+    <div *ngIf="highscore" class="new-highscore" [formGroup]="highscoreForm">
+        <h3>New Highscore!</h3>
+        <div *ngIf="!highscoreSubmitted" class="highscore-form">
+            <label for="name">Name</label>
+            <input id="name" type="text" formControlName="name">
+            <button (click)="submitHighscore()">Submit</button>
+        </div>
+
+        <div *ngIf="highscoreSubmitted">
+            nice.
+        </div>
+    </div>
+
     <div class="button-container">
         <button (click)="closeDialog()">Try Again?</button>
     </div>
